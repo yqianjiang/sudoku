@@ -49,7 +49,6 @@ function App() {
           {idx !== languages.length - 1 && " | "}
         </Fragment>
       ))}
-      <h1>{t("Sudoku")}</h1>
       <GameBoard />
     </>
   );

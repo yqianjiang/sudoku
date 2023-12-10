@@ -7,17 +7,62 @@ import { initReactI18next } from "react-i18next";
 const resources = {
   en: {
     translation: {
-      "Sudoku": "Sudoku"
+      "Sudoku": "Sudoku",
+      "Level:": "Level:",
+      "Highlight Numbers:": "Highlight Numbers:",
+      "Highlight Cells:": "Highlight Cells:",
+      "Show Errors:": "Show Errors:",
+      "Level": "Level:",
+      "Very Easy": "Very Easy",
+      "Easy": "Easy",
+      "Normal": "Normal",
+      "Hard": "Hard",
+      "Empty": "Empty",
+      "Very Hard": "Very Hard",
+      "New Game": "New Game",
+      "Restart this Game": "Restart this Game",
+      "Resume": "Resume",
+      "Pause": "Pause",
     }
   },
   zh: {
     translation: {
-      "Sudoku": "数独"
+      "Sudoku": "数独",
+      "Level:": "难度:",
+      "Highlight Numbers:": "高亮数字:",
+      "Highlight Cells:": "高亮单元格:",
+      "Show Errors:": "显示错误:",
+      "Level": "难度:",
+      "Very Easy": "非常简单",
+      "Easy": "简单",
+      "Normal": "普通",
+      "Hard": "困难",
+      "Very Hard": "非常困难",
+      "Empty": "空白",
+      "New Game": "新游戏",
+      "Restart this Game": "重玩该局",
+      "Resume": "继续",
+      "Pause": "暂停",
     }
   },
   ja: {
     translation: {
-      "Sudoku": "数独"
+      "Sudoku": "数独",
+      "Level:": "レベル:",
+      "Highlight Numbers:": "ハイライト数字:",
+      "Highlight Cells:": "ハイライトセル:",
+      "Show Errors:": "エラーを表示:",
+      "Level": "レベル:",
+      "Very Easy": "とても簡単",
+      "Easy": "簡単",
+      "Normal": "普通",
+      "Hard": "ハード",
+      "Very Hard": "とてもハード",
+      "Empty": "空白",
+      "New Game": "新しいゲーム",
+      "Restart this Game": "このゲームを再起動する",
+      "Resume": "再開",
+      "Pause": "一時停止",
     }
   },
 };

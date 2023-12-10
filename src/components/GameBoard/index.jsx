@@ -5,6 +5,8 @@ import Sudoku from "../../utils/Sudoku.js";
 import config from "../../utils/Config.js";
 import GameConfig from "../GameConfig";
 
+import { useTranslation } from "react-i18next";
+
 let prevBoardSize = null;
 function formatTime(time) {
   const minutes = Math.floor(time / 60);
@@ -12,6 +14,8 @@ function formatTime(time) {
   return `${minutes}:${seconds < 10 ? "0" + seconds : seconds}`;
 }
 const GameBoard = () => {
+  const { t } = useTranslation();
+
   const canvasRef = useRef(null);
   const gameBoardRef = useRef(null);
   const stageRef = useRef(null);
@@ -97,10 +101,10 @@ const GameBoard = () => {
       <div>
         <span>{formatTime(elapsedTime)}</span>
         <button onClick={handlePauseResume}>
-          {isPaused ? "Resume" : "Pause"}
+          {isPaused ? t("Resume") : t("Pause")}
         </button>
-        <button onClick={handleRestart}>Restart this Game</button>
-        <button onClick={handleNewGame}>New Game</button>
+        <button onClick={handleRestart}>{t('Restart this Game')}</button>
+        <button onClick={handleNewGame}>{t('New Game')}</button>
       </div>
       <GameConfig onUpdate={handleUpdateConfig} onUpdateLevel={handleNewGame} />
     </div>
