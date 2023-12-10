@@ -14,7 +14,12 @@ const resources = {
     translation: {
       "Sudoku": "数独"
     }
-  }
+  },
+  ja: {
+    translation: {
+      "Sudoku": "数独"
+    }
+  },
 };
 
 i18n

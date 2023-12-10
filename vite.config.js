@@ -9,6 +9,7 @@ export default defineConfig({
       input: {
         'en': './index.html',
         'zh': './zh/index.html',
+        'ja': './ja/index.html',
       },
       // output: {
       //   dir: 'dist',
