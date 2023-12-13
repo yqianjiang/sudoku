@@ -18,7 +18,24 @@ class Stage {
       textColorPlayer: '#666',
       boldLineWidth: 3,
       normalLineWidth: 1,
+      cellSize: 34,
     };
+
+    this.setCanvasSize();
+  }
+
+  setCanvasSize() {
+    const { boardSize } = this.configs;
+    const width = boardSize * this.theme.cellSize;
+    const height = boardSize * this.theme.cellSize;
+    // 设置css确保显示的大小
+    this.canvas.style.width = width + 'px';
+    this.canvas.style.height = height + 'px';
+    // 避免模糊
+    const scaleFactor = window.devicePixelRatio;
+    this.canvas.width = width * scaleFactor;
+    this.canvas.height = height * scaleFactor;
+    this.ctx.scale(scaleFactor, scaleFactor);
   }
 
   clear() {
@@ -72,7 +89,7 @@ class Stage {
   drawGameBoard() {
     const rows = this.configs.boardSize;
     const cols = this.configs.boardSize;
-    const cellSize = this.canvas.width / cols;
+    const cellSize = this.theme.cellSize;
     const boldLineWidth = this.theme.boldLineWidth;
 
     this.ctx.lineWidth = this.theme.normalLineWidth;
@@ -112,7 +129,7 @@ class Stage {
   // 填数字，numbers 是一个 9x9 的二维数组，每个元素是一个数字，0 表示空
   renderNumbers() {
     const numbers = this.gameBoard.getBoard();
-    const cellSize = this.canvas.width / this.configs.boardSize;
+    const cellSize = this.theme.cellSize;
     const fontSize = 0.6 * cellSize;
     this.ctx.font = `${fontSize}px Arial`;
     this.ctx.textAlign = 'center';
@@ -139,7 +156,7 @@ class Stage {
 
   // 画选中的方格
   drawSelectedSquare(square) {
-    const cellSize = this.canvas.width / this.configs.boardSize;
+    const cellSize = this.theme.cellSize;
     const boldLineWidth = this.theme.boldLineWidth;
 
     this.ctx.lineWidth = boldLineWidth;
@@ -151,7 +168,7 @@ class Stage {
   }
   
   drawWrongCells() {
-    const cellSize = this.canvas.width / this.configs.boardSize;
+    const cellSize = this.theme.cellSize;
     const errorColor = this.theme.errorColor;
     
     this.ctx.fillStyle = errorColor;
@@ -163,7 +180,7 @@ class Stage {
 
   // 如果选中方格有数字，高亮所有相同的数字
   drawRelatedNumbers(square) {
-    const cellSize = this.canvas.width / this.configs.boardSize;
+    const cellSize = this.theme.cellSize;
     const highlightColor = this.theme.highlightNumberColor;
 
     const numbers = this.gameBoard.getBoard();
@@ -185,7 +202,7 @@ class Stage {
 
   // 选中方格同时高亮同一行、同一列、同一九宫格的方格
   drawRelatedSquares(square) {
-    const cellSize = this.canvas.width / this.configs.boardSize;
+    const cellSize = this.theme.cellSize;
     const highlightColor = this.theme.highlightColor;
 
     // 高亮同一行的方格

@@ -33,8 +33,8 @@ class EventManager {
     x -= rect.left;
     y -= rect.top;
 
-    const cellSizeCol = this.stage.canvas.width / this.configs.boardSize;
-    const cellSizeRow = this.stage.canvas.height / this.configs.boardSize;
+    const cellSizeCol = this.stage.theme.cellSize;
+    const cellSizeRow = this.stage.theme.cellSize
     const row = Math.floor(y / cellSizeRow);
     const col = Math.floor(x / cellSizeCol);
 

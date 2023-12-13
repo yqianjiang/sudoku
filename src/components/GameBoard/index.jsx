@@ -7,6 +7,8 @@ import GameConfig from "../GameConfig";
 
 import { useTranslation } from "react-i18next";
 
+import "./style.css";
+
 let prevBoardSize = null;
 function formatTime(time) {
   const minutes = Math.floor(time / 60);
@@ -89,6 +91,7 @@ const GameBoard = () => {
       prevBoardSize = config.boardSize;
       setBoardSize(config.boardSize);
       gameBoardRef.current.startNewGame();
+      stageRef.current.setCanvasSize();
       stageRef.current.render();
     }
 
@@ -97,7 +100,25 @@ const GameBoard = () => {
 
   return (
     <div>
-      <canvas ref={canvasRef} width={boardSize * 50} height={boardSize * 50} />
+      <canvas ref={canvasRef} />
+      <div className="number-buttons">
+        {/* 这里搞 1-9 数字的按钮，点击后，选中的格子填入对应数字 */}
+        {Array.from({ length: boardSize }, (_, i) => i + 1).map((num) => (
+          <button
+            className="number-button"
+            key={num}
+            onClick={() => {
+              if (gameBoardRef.current.gameState !== "running") {
+                return;
+              }
+              eventManagerRef.current.fillNumber(num);
+              stageRef.current.render(eventManagerRef.current.selectedSquare);
+            }}
+          >
+            {num}
+          </button>
+        ))}
+      </div>
       <div>
         <span>{formatTime(elapsedTime)}</span>
         <button onClick={handlePauseResume}>
