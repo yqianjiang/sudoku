@@ -1,1 +1,0 @@
-.number-buttons{display:flex;flex-wrap:nowrap;padding:0;width:100%}.number-button{background-color:#fff;border:1px solid #000;color:#000;cursor:pointer;font-size:1.2rem;width:34px;height:34px;margin:0;box-sizing:border-box}.number-button:not(:last-child){border-right:none}
