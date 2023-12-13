@@ -23,6 +23,7 @@ const resources = {
       "Restart this Game": "Restart this Game",
       "Resume": "Resume",
       "Pause": "Pause",
+      Erase: "Erase",
     }
   },
   zh: {
@@ -43,6 +44,7 @@ const resources = {
       "Restart this Game": "重玩该局",
       "Resume": "继续",
       "Pause": "暂停",
+      Erase: "擦除",
     }
   },
   ja: {
@@ -63,6 +65,7 @@ const resources = {
       "Restart this Game": "このゲームを再起動する",
       "Resume": "再開",
       "Pause": "一時停止",
+      Erase: "消す",
     }
   },
 };

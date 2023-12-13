@@ -102,7 +102,6 @@ const GameBoard = () => {
     <div>
       <canvas ref={canvasRef} />
       <div className="number-buttons">
-        {/* 这里搞 1-9 数字的按钮，点击后，选中的格子填入对应数字 */}
         {Array.from({ length: boardSize }, (_, i) => i + 1).map((num) => (
           <button
             className="number-button"
@@ -119,11 +118,25 @@ const GameBoard = () => {
           </button>
         ))}
       </div>
-      <div>
-        <span>{formatTime(elapsedTime)}</span>
-        <button onClick={handlePauseResume}>
+      <div className="action-buttons">
+        <button
+          className="action-button"
+          onClick={() => {
+            if (gameBoardRef.current.gameState !== "running") {
+              return;
+            }
+            eventManagerRef.current.fillNumber(0);
+            stageRef.current.render(eventManagerRef.current.selectedSquare);
+          }}
+        >
+          {t("Erase")}
+        </button>
+        <button className="action-button" onClick={handlePauseResume}>
           {isPaused ? t("Resume") : t("Pause")}
         </button>
+        <span>{formatTime(elapsedTime)}</span>
+      </div>
+      <div>
         <button onClick={handleRestart}>{t('Restart this Game')}</button>
         <button onClick={handleNewGame}>{t('New Game')}</button>
       </div>
