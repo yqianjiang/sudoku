@@ -1,11 +1,9 @@
-import { useTranslation } from "react-i18next";
 import "./App.css";
 import { changeLanguage } from "i18next";
 import { useEffect, useState, Fragment } from "react";
 import GameBoard from "./components/GameBoard";
 
 function App() {
-  const { t } = useTranslation();
   const [currLang, setCurrLang] = useState("");
 
   useEffect(() => {

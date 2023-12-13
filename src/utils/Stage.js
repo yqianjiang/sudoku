@@ -1,25 +1,25 @@
 class Stage {
-    constructor(canvas, gameBoard, configs) {
-      this.canvas = canvas;
-      this.ctx = this.canvas.getContext('2d');
+  constructor(canvas, gameBoard, configs) {
+    this.canvas = canvas;
+    this.ctx = this.canvas.getContext('2d');
 
-      this.gameBoard = gameBoard;
+    this.gameBoard = gameBoard;
 
-      this.configs = configs;
+    this.configs = configs;
 
-      this.theme = {
-        background: '#fff',
-        highlightColor: '#99ddff',
-        highlightNumberColor: '#66bbff',
-        selectedStrokeColor: '#0055FF',
-        boardStrokeColor: '#336699',
-        errorColor: '#ff0055',
-        textColor: '#333',
-        textColorPlayer: '#666',
-        boldLineWidth: 3,
-        normalLineWidth: 1,
-      };
-    }
+    this.theme = {
+      background: '#fff',
+      highlightColor: '#99ddff',
+      highlightNumberColor: '#66bbff',
+      selectedStrokeColor: '#0055FF',
+      boardStrokeColor: '#336699',
+      errorColor: '#ff0055',
+      textColor: '#333',
+      textColorPlayer: '#666',
+      boldLineWidth: 3,
+      normalLineWidth: 1,
+    };
+  }
 
   clear() {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
