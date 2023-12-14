@@ -14,7 +14,10 @@
   width: 34px;
   height: 34px;
   margin: 0;
+  padding: 0;
   box-sizing: border-box;
+  text-align: center;
+  line-height: 34px;
 }
 
 /* 避免border重叠 */
