@@ -11,7 +11,6 @@ class EventManager {
 
   handleClick(event) {
     if (this.gameBoard.gameState !== 'running') {
-      console.log('当前不可操作')
       return;
     }
 

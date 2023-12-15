@@ -20,7 +20,7 @@ class Stage {
       normalLineWidth: 1,
       cellSize: 34,
     };
-
+    this.scaleFactor = window.devicePixelRatio;
     this.setCanvasSize();
   }
 
@@ -32,10 +32,9 @@ class Stage {
     this.canvas.style.width = width + 'px';
     this.canvas.style.height = height + 'px';
     // 避免模糊
-    const scaleFactor = window.devicePixelRatio;
-    this.canvas.width = width * scaleFactor;
-    this.canvas.height = height * scaleFactor;
-    this.ctx.scale(scaleFactor, scaleFactor);
+    this.canvas.width = width * this.scaleFactor;
+    this.canvas.height = height * this.scaleFactor;
+    this.ctx.scale(this.scaleFactor, this.scaleFactor);
   }
 
   clear() {
@@ -60,29 +59,32 @@ class Stage {
     this.renderNumbers();
   }
 
-  renderWin() {
+  // 渲染蒙层
+  renderMask(opacity) {
     this.clear();
     this.drawGameBoard();
     this.renderNumbers();
-    this.ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
-    this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+    this.ctx.fillStyle = `rgba(255, 255, 255, ${opacity})`;
+    this.ctx.fillRect(0, 0, this.canvas.width / this.scaleFactor, this.canvas.height / this.scaleFactor);
+  }
+
+  // 渲染文字
+  renderText(text, x, y) {
     this.ctx.fillStyle = '#000';
     this.ctx.font = 'bold 48px Arial';
     this.ctx.textAlign = 'center';
     this.ctx.textBaseline = 'middle';
-    this.ctx.fillText('You Win!', this.canvas.width / 2, this.canvas.height / 2);
+    this.ctx.fillText(text, x, y);
+  }
+
+  renderWin() {
+    this.renderMask(0.3);
+    this.renderText('You Win!', this.canvas.width / 2 / this.scaleFactor, this.canvas.height / 2 / this.scaleFactor);
   }
 
   renderPause() {
-    this.clear();
-    this.drawGameBoard();
-    this.ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
-    this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
-    this.ctx.fillStyle = '#000';
-    this.ctx.font = 'bold 48px Arial';
-    this.ctx.textAlign = 'center';
-    this.ctx.textBaseline = 'middle';
-    this.ctx.fillText('Paused', this.canvas.width / 2, this.canvas.height / 2);
+    this.renderMask(0.5);
+    this.renderText('Paused', this.canvas.width / 2 / this.scaleFactor, this.canvas.height / 2 / this.scaleFactor);
   }
 
   // 画数独游戏的背景游戏板，九宫格范围内线条加粗
