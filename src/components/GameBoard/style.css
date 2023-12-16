@@ -34,8 +34,21 @@
   margin-bottom: 6px;
 }
 
-.action-button {
+button {
   margin-right: 6px;
+  background-color: #fff;
+  border: 1px solid #000;
+  color: #000;
+  cursor: pointer;
+  font-size: 1.2rem;
+  height: 34px;
+  box-sizing: border-box;
+}
+
+select {
+  margin-top: 6px;
+  margin-right: 6px;
+  margin-bottom: 6px;
   background-color: #fff;
   border: 1px solid #000;
   color: #000;
