@@ -1,0 +1,41 @@
+:root {
+  --bg-gray: #C0C0C0;
+}
+
+html {
+  background-color: var(--bg-gray);
+  display: flex;
+  justify-content: center;
+}
+
+body {
+  overflow: auto;
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 12px;
+  position: relative;
+}
+
+.game-intros {
+  max-width: 800px;
+  margin: auto;
+  padding: 16px;
+  background-color: #fff;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+/* 游戏规则和操作说明样式 */
+ul li,
+ol li {
+  margin: 10px 0;
+}
+
+a {
+  text-decoration: none;
+  color: #0073e6;
+}
+
+a:hover {
+  text-decoration: underline;
+}
