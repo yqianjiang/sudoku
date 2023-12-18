@@ -143,10 +143,11 @@ class Stage {
         const isOriginal = this.gameBoard.isOriginal(row, col); // Check if the number is original
 
         if (number !== 0) {
+          this.ctx.fillStyle = this.theme.textColor;
           if (isOriginal) {
-            this.ctx.fillStyle = this.theme.textColor; // Use theme.textColor for original numbers
+            this.ctx.font = `${fontSize}px Arial`;
           } else {
-            this.ctx.fillStyle = this.theme.textColorPlayer; // Use theme.textColorPlayer for player-filled numbers
+            this.ctx.font = `bold ${fontSize}px Arial`; // Set font to bold for player-filled numbers
           }
 
           this.ctx.fillText(number, col * cellSize + cellSize / 2, row * cellSize + cellSize / 2);

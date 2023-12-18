@@ -77,6 +77,7 @@ const GameBoard = () => {
   };
 
   const handleRestart = () => {
+    setIsPaused(false);
     gameBoardRef.current.resetGame();
     stageRef.current.render();
   };
@@ -134,6 +135,23 @@ const GameBoard = () => {
         <button className="action-button" onClick={handlePauseResume}>
           {isPaused ? t("Resume") : t("Pause")}
         </button>
+        {/* 提示 */}
+        <button
+          className="action-button"
+          onClick={() => {
+            if (gameBoardRef.current.gameState !== "running") {
+              return;
+            }
+            const selected = eventManagerRef.current.selectedSquare;
+            const hintNum = gameBoardRef.current.hint(selected.row, selected.col);
+            eventManagerRef.current.fillNumber(hintNum);
+            stageRef.current.render(selected);
+          }}
+        >
+          {t("Hint")}
+        </button>
+
+        {/* 解答 */}
         <button
           className="action-button"
           onClick={() => {

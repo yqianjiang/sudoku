@@ -53,6 +53,15 @@ class Sudoku {
     }
   }
 
+  hint(x, y) {
+    const maxNum = this.configs.boardSize;
+    const res = solveSudoku(this.board, maxNum);
+    if (res) {
+      return res[x][y];
+    }
+    return 0;
+  }
+
   initGame() {
     this.wrongCells = [];
 
@@ -91,10 +100,10 @@ class Sudoku {
   }
 
   resetGame() {
+    this.restartTimer();
     this.board = this.originState.map((x) => x.map((y) => y));
     this.wrongCells = [];
     this.gameState = "running";
-    this.restartTimer();
   }
 
   startGame() {

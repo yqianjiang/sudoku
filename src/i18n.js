@@ -24,6 +24,8 @@ const resources = {
       "Resume": "Resume",
       "Pause": "Pause",
       Erase: "Erase",
+      Solve: "Solve",
+      Hint: "Hint",
     }
   },
   zh: {
@@ -45,6 +47,8 @@ const resources = {
       "Resume": "继续",
       "Pause": "暂停",
       Erase: "擦除",
+      Solve: "解答",
+      Hint: "提示",
     }
   },
   ja: {
@@ -66,6 +70,8 @@ const resources = {
       "Resume": "再開",
       "Pause": "一時停止",
       Erase: "消す",
+      Solve: "解く",
+      Hint: "ヒント",
     }
   },
 };

@@ -18,6 +18,7 @@
   box-sizing: border-box;
   text-align: center;
   line-height: 34px;
+  font-weight: bold;
 }
 
 /* 避免border重叠 */
