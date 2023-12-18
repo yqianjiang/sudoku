@@ -134,6 +134,18 @@ const GameBoard = () => {
         <button className="action-button" onClick={handlePauseResume}>
           {isPaused ? t("Resume") : t("Pause")}
         </button>
+        <button
+          className="action-button"
+          onClick={() => {
+            if (gameBoardRef.current.gameState !== "running") {
+              return;
+            }
+            gameBoardRef.current.solve();
+            stageRef.current.render();
+          }}
+        >
+          {t("Solve")}
+        </button>
         <span>{formatTime(elapsedTime)}</span>
       </div>
       <div>

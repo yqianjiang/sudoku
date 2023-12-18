@@ -42,6 +42,17 @@ class Sudoku {
     this.wrongCells = [];
   }
 
+  solve() {
+    const maxNum = this.configs.boardSize;
+    const res = solveSudoku(this.board, maxNum);
+    if (res) {
+      this.board = res.map((x) => x.map((y) => y));
+      this.finishGame();
+    } else {
+      console.log("无解");
+    }
+  }
+
   initGame() {
     this.wrongCells = [];
 
