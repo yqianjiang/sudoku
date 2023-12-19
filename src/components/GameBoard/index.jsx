@@ -67,7 +67,7 @@ const GameBoard = () => {
   const handlePauseResume = () => {
     if (gameBoardRef.current.gameState === "running") {
       gameBoardRef.current.pause();
-      stageRef.current.renderPause();
+      stageRef.current.renderPause(t("Paused"));
       setIsPaused(true);
     } else {
       gameBoardRef.current.resume();
@@ -101,7 +101,7 @@ const GameBoard = () => {
 
   return (
     <div>
-      <canvas ref={canvasRef} />
+      <canvas ref={canvasRef} id="game-board" />
       <div className="number-buttons">
         {Array.from({ length: boardSize }, (_, i) => i + 1).map((num) => (
           <button
@@ -120,6 +120,10 @@ const GameBoard = () => {
         ))}
       </div>
       <div className="action-buttons">
+        <span className="game-timer">{formatTime(elapsedTime)}</span>
+        <button className="action-button" onClick={handlePauseResume}>
+          {isPaused ? t("Resume") : t("Pause")}
+        </button>
         <button
           className="action-button"
           onClick={() => {
@@ -132,9 +136,23 @@ const GameBoard = () => {
         >
           {t("Erase")}
         </button>
-        <button className="action-button" onClick={handlePauseResume}>
-          {isPaused ? t("Resume") : t("Pause")}
+
+        {/* 切换笔记模式的按钮 */}
+        <button
+          className="action-button"
+          onClick={() => {
+            if (gameBoardRef.current.gameState !== "running") {
+              return;
+            }
+            eventManagerRef.current.toggleNotesMode();
+            stageRef.current.render(eventManagerRef.current.selectedSquare);
+          }}
+        >
+          {eventManagerRef?.current?.notesMode ? t("Notes On") : t("Notes Off")}
         </button>
+      </div>
+      <div className="action-buttons">
+
         {/* 提示 */}
         <button
           className="action-button"
@@ -164,7 +182,6 @@ const GameBoard = () => {
         >
           {t("Solve")}
         </button>
-        <span>{formatTime(elapsedTime)}</span>
       </div>
       <div>
         <button onClick={handleRestart}>{t('Restart this Game')}</button>

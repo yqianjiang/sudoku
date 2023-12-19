@@ -58,3 +58,18 @@ select {
   height: 34px;
   box-sizing: border-box;
 }
+
+.game-timer {
+  margin-right: 6px;
+  color: #000;
+  font-size: 1.2rem;
+  height: 34px;
+  box-sizing: border-box;
+  text-align: center;
+  line-height: 34px;
+  padding: 0 6px;
+}
+
+#game-board {
+  border: 2px solid #336699;
+}

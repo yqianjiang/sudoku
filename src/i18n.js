@@ -26,6 +26,8 @@ const resources = {
       Erase: "Erase",
       Solve: "Solve",
       Hint: "Hint",
+      "Notes On": "Notes On",
+      "Notes Off": "Notes Off",
     }
   },
   zh: {
@@ -49,6 +51,8 @@ const resources = {
       Erase: "擦除",
       Solve: "解答",
       Hint: "提示",
+      "Notes On": "笔记(开)",
+      "Notes Off": "笔记(关)",
     }
   },
   ja: {
@@ -72,6 +76,8 @@ const resources = {
       Erase: "消す",
       Solve: "解く",
       Hint: "ヒント",
+      "Notes On": "メモ(オン)",
+      "Notes Off": "メモ(オフ)",
     }
   },
 };

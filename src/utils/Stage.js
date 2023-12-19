@@ -56,6 +56,7 @@ class Stage {
       this.drawWrongCells();
     }
     this.drawGameBoard();
+    this.renderNotes();
     this.renderNumbers();
   }
 
@@ -82,9 +83,9 @@ class Stage {
     this.renderText('You Win!', this.canvas.width / 2 / this.scaleFactor, this.canvas.height / 2 / this.scaleFactor);
   }
 
-  renderPause() {
-    this.renderMask(0.5);
-    this.renderText('Paused', this.canvas.width / 2 / this.scaleFactor, this.canvas.height / 2 / this.scaleFactor);
+  renderPause(text) {
+    this.renderMask(0.97);
+    this.renderText(text || 'Paused', this.canvas.width / 2 / this.scaleFactor, this.canvas.height / 2 / this.scaleFactor);
   }
 
   // 画数独游戏的背景游戏板，九宫格范围内线条加粗
@@ -97,6 +98,7 @@ class Stage {
     this.ctx.lineWidth = this.theme.normalLineWidth;
     this.ctx.strokeStyle = this.theme.boardStrokeColor;
 
+    // 画横线
     for (let i = 0; i <= rows; i++) {
       this.ctx.beginPath();
       this.ctx.moveTo(0, i * cellSize);
@@ -104,6 +106,7 @@ class Stage {
       this.ctx.stroke();
     }
 
+    // 画竖线
     for (let i = 0; i <= cols; i++) {
       this.ctx.beginPath();
       this.ctx.moveTo(i * cellSize, 0);
@@ -111,8 +114,10 @@ class Stage {
       this.ctx.stroke();
     }
 
+    // 画加粗的九宫格
     this.ctx.lineWidth = boldLineWidth;
 
+    // 画加粗的横线
     for (let i = 0; i <= rows; i += Math.sqrt(rows)) {
       this.ctx.beginPath();
       this.ctx.moveTo(0, i * cellSize);
@@ -120,6 +125,7 @@ class Stage {
       this.ctx.stroke();
     }
 
+    // 画加粗的竖线
     for (let i = 0; i <= cols; i += Math.sqrt(cols)) {
       this.ctx.beginPath();
       this.ctx.moveTo(i * cellSize, 0);
@@ -156,6 +162,35 @@ class Stage {
     }
   }
 
+  renderNotes() {
+    const numbers = this.gameBoard.getBoard();
+    const size = Math.sqrt(this.configs.boardSize);
+    const cellSize = this.theme.cellSize;
+    const fontSize = 0.25 * cellSize;
+    this.ctx.font = `${fontSize}px Arial`;
+    this.ctx.textAlign = 'center';
+    this.ctx.textBaseline = 'middle';
+
+    for (let row = 0; row < numbers.length; row++) {
+      for (let col = 0; col < numbers[row].length; col++) {
+        const number = numbers[row][col];
+
+        if (number === 0) {
+          // Draw notes, notes 为一个等同于 boardSize 的一维 boolean 数组，每个数字有固定的渲染位置，为 true 时渲染
+          const notes = this.gameBoard.getNotes(row, col);
+
+          for (let i = 0; i < notes.length; i++) {
+            if (notes[i]) {
+              const x = col * cellSize + cellSize / 2 + (i % size - 1) * cellSize / 3;
+              const y = row * cellSize + cellSize / 2 + Math.floor(i / size - 1) * cellSize / 3;
+              this.ctx.fillStyle = this.theme.textColorPlayer;
+              this.ctx.fillText(i + 1, x, y);
+            }
+          }
+        }
+      }
+    }
+  }
 
   // 画选中的方格
   drawSelectedSquare(square) {

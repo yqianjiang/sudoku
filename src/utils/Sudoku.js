@@ -97,11 +97,18 @@ class Sudoku {
       console.log(count);
       console.log("loaded, 用时", new Date().getTime() - start);
     }
+
+    this.initNotes();
+  }
+
+  initNotes() {
+    this.notes = this.board.map((row) => row.map(() => new Array(this.configs.boardSize).fill(false)));
   }
 
   resetGame() {
     this.restartTimer();
     this.board = this.originState.map((x) => x.map((y) => y));
+    this.initNotes();
     this.wrongCells = [];
     this.gameState = "running";
   }
@@ -163,6 +170,14 @@ class Sudoku {
     return this.originState[row][col] > 0;
   }
 
+  fillNotes(row, col, number) {
+    if (this.board[row][col] > 0) {
+      return;
+    }
+
+    this.notes[row][col][number - 1] = !this.notes[row][col][number - 1];
+  }
+
   fillNumber(row, col, number) {
     // 检查是否可以填入
     if (this.isOriginal(row, col)) {
@@ -202,6 +217,10 @@ class Sudoku {
 
   getBoard() {
     return this.board;
+  }
+
+  getNotes(row, col) {
+    return this.notes[row][col];
   }
 
   // 检查填入的数字是否正确

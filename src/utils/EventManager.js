@@ -4,6 +4,7 @@ class EventManager {
     this.gameBoard = gameBoard;
     this.configs = configs;
     this.selectedSquare = null;
+    this.notesMode = false; // 标记模式状态
 
     this.stage.canvas.addEventListener('click', this.handleClick.bind(this));
     document.addEventListener('keydown', this.handleKeyDown.bind(this));
@@ -77,8 +78,16 @@ class EventManager {
     }
 
     if (number >= 0 && number <= this.configs.boardSize) {
-      this.gameBoard.fillNumber(this.selectedSquare.row, this.selectedSquare.col, number);
+      if (this.notesMode) {
+        this.gameBoard.fillNotes(this.selectedSquare.row, this.selectedSquare.col, number);
+      } else {
+        this.gameBoard.fillNumber(this.selectedSquare.row, this.selectedSquare.col, number);
+      }
     }
+  }
+
+  toggleNotesMode() {
+    this.notesMode = !this.notesMode;
   }
 }
 
