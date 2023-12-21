@@ -168,7 +168,9 @@ class Stage {
     const numbers = this.gameBoard.getBoard();
     const size = Math.sqrt(this.configs.boardSize);
     const cellSize = this.theme.cellSize;
-    const fontSize = 0.25 * cellSize;
+    const fontSize = 0.26 * cellSize;
+    const padding = 2;
+    const innerCellSize = cellSize - padding * 2;
     this.ctx.font = `${fontSize}px Arial`;
     this.ctx.textAlign = 'center';
     this.ctx.textBaseline = 'middle';
@@ -181,10 +183,14 @@ class Stage {
           // Draw notes, notes 为一个等同于 boardSize 的一维 boolean 数组，每个数字有固定的渲染位置，为 true 时渲染
           const notes = this.gameBoard.getNotes(row, col);
 
+          // 计算当前格子的左上角
+          const startX = col * cellSize;
+          const startY = row * cellSize;
+
           for (let i = 0; i < notes.length; i++) {
             if (notes[i]) {
-              const x = col * cellSize + cellSize / 2 + (i % size - 1) * cellSize / 3;
-              const y = row * cellSize + cellSize / 2 + Math.floor(i / size - 1) * cellSize / 3;
+              const x = startX + padding + innerCellSize / 2 + (i % size - 1) * innerCellSize / 3;
+              const y = startY + padding + innerCellSize / 2 + Math.floor(i / size - 1) * innerCellSize / 3;
               this.ctx.fillStyle = this.theme.textColorPlayer;
               this.ctx.fillText(i + 1, x, y);
             }

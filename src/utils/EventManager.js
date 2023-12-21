@@ -121,7 +121,7 @@ class EventManager {
 
   handleWindowResize() {
     // 根据窗口大小调整 this.stage.theme.cellSize
-    const width = window.innerWidth - 60;
+    const width = document.body.clientWidth - 60;
     const height = window.innerHeight;
     const size = Math.min(width, height);
     const maxCellSize = Math.floor(size / this.configs.boardSize);
