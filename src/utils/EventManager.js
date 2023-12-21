@@ -6,8 +6,35 @@ class EventManager {
     this.selectedSquare = null;
     this.notesMode = false; // 标记模式状态
 
-    this.stage.canvas.addEventListener('click', this.handleClick.bind(this));
+    const handleClick = this.throttle(this.handleClick.bind(this), 300);
+    const handleWindowResize = this.debounce(this.handleWindowResize.bind(this), 100);
+
+    this.stage.canvas.addEventListener('click', handleClick);
     document.addEventListener('keydown', this.handleKeyDown.bind(this));
+    window.addEventListener('resize', handleWindowResize);
+
+    this.handleWindowResize();
+  }
+
+  debounce(func, delay) {
+    let timeoutId;
+    return function (...args) {
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(() => {
+        func.apply(this, args);
+      }, delay);
+    };
+  }
+
+  throttle(func, delay) {
+    let lastCallTime = 0;
+    return function (...args) {
+      const now = Date.now();
+      if (now - lastCallTime >= delay) {
+        func.apply(this, args);
+        lastCallTime = now;
+      }
+    };
   }
 
   handleClick(event) {
@@ -46,6 +73,8 @@ class EventManager {
     if (this.gameBoard.gameState !== 'running') {
       return;
     }
+    // 阻止默认
+    event.preventDefault();
 
     const maxNum = this.configs.boardSize;
     // 方向键切换选中的方格
@@ -88,6 +117,19 @@ class EventManager {
 
   toggleNotesMode() {
     this.notesMode = !this.notesMode;
+  }
+
+  handleWindowResize() {
+    // 根据窗口大小调整 this.stage.theme.cellSize
+    const width = window.innerWidth - 60;
+    const height = window.innerHeight;
+    const size = Math.min(width, height);
+    const maxCellSize = Math.floor(size / this.configs.boardSize);
+    const cellSize = Math.min(maxCellSize, 50);
+    this.stage.theme.cellSize = cellSize;
+    document.documentElement.style.setProperty('--cell-size', `${cellSize}px`);
+    this.stage.setCanvasSize();
+    this.stage.render(this.selectedSquare);
   }
 }
 

@@ -1,3 +1,8 @@
+:root {
+  --cell-size: 50px;
+  --button-gap: 6px;
+}
+
 .number-buttons {
   display: flex;
   flex-wrap: nowrap;
@@ -10,14 +15,14 @@
   border: 1px solid #000;
   color: #000;
   cursor: pointer;
-  font-size: 1.2rem;
-  width: 34px;
-  height: 34px;
+  font-size: calc(0.6 * var(--cell-size));
+  width: var(--cell-size);
+  height: var(--cell-size);
+  line-height: var(--cell-size);
   margin: 0;
   padding: 0;
   box-sizing: border-box;
   text-align: center;
-  line-height: 34px;
   font-weight: bold;
 }
 
@@ -28,48 +33,49 @@
 
 .action-buttons {
   display: flex;
-  flex-wrap: nowrap;
+  flex-wrap: wrap;
   padding: 0;
   width: 100%;
-  margin-top: 6px;
-  margin-bottom: 6px;
+  margin-top: var(--button-gap);
+  margin-bottom: var(--button-gap);
+  gap: var(--button-gap) 0;
 }
 
 button {
-  margin-right: 6px;
+  margin-right: var(--button-gap);
   background-color: #fff;
   border: 1px solid #000;
   color: #000;
   cursor: pointer;
   font-size: 1.2rem;
-  height: 34px;
+  height: 36px;
   box-sizing: border-box;
 }
 
 select {
-  margin-top: 6px;
-  margin-right: 6px;
-  margin-bottom: 6px;
+  margin-top: var(--button-gap);
+  margin-right: var(--button-gap);
+  margin-bottom: var(--button-gap);
   background-color: #fff;
   border: 1px solid #000;
   color: #000;
   cursor: pointer;
   font-size: 1.2rem;
-  height: 34px;
+  height: 36px;
   box-sizing: border-box;
 }
 
 .game-timer {
-  margin-right: 6px;
+  margin-right: var(--button-gap);
   color: #000;
   font-size: 1.2rem;
-  height: 34px;
+  height: 36px;
+  line-height: 36px;
   box-sizing: border-box;
   text-align: center;
-  line-height: 34px;
-  padding: 0 6px;
+  padding: 0 var(--button-gap);
 }
 
 #game-board {
-  border: 2px solid #336699;
+  box-sizing: border-box;
 }

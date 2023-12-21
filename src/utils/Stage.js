@@ -61,10 +61,12 @@ class Stage {
   }
 
   // 渲染蒙层
-  renderMask(opacity) {
+  renderMask(opacity, numberVisible) {
     this.clear();
     this.drawGameBoard();
-    this.renderNumbers();
+    if (numberVisible) {
+      this.renderNumbers();
+    }
     this.ctx.fillStyle = `rgba(255, 255, 255, ${opacity})`;
     this.ctx.fillRect(0, 0, this.canvas.width / this.scaleFactor, this.canvas.height / this.scaleFactor);
   }
@@ -79,12 +81,12 @@ class Stage {
   }
 
   renderWin() {
-    this.renderMask(0.3);
+    this.renderMask(0.3, true);
     this.renderText('You Win!', this.canvas.width / 2 / this.scaleFactor, this.canvas.height / 2 / this.scaleFactor);
   }
 
   renderPause(text) {
-    this.renderMask(0.97);
+    this.renderMask(0.5);
     this.renderText(text || 'Paused', this.canvas.width / 2 / this.scaleFactor, this.canvas.height / 2 / this.scaleFactor);
   }
 

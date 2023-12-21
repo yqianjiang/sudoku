@@ -67,7 +67,7 @@ const GameBoard = () => {
   const handlePauseResume = () => {
     if (gameBoardRef.current.gameState === "running") {
       gameBoardRef.current.pause();
-      stageRef.current.renderPause(t("Paused"));
+      stageRef.current.renderPause(t("Pause"));
       setIsPaused(true);
     } else {
       gameBoardRef.current.resume();
@@ -150,9 +150,6 @@ const GameBoard = () => {
         >
           {eventManagerRef?.current?.notesMode ? t("Notes On") : t("Notes Off")}
         </button>
-      </div>
-      <div className="action-buttons">
-
         {/* 提示 */}
         <button
           className="action-button"
