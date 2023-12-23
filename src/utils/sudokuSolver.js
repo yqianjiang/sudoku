@@ -15,7 +15,6 @@ const getNeighborIdx = (i, j) => {
   ].map((y) => [y[0] + di, y[1] + dj]);
 };
 
-
 const getNeighborVal = (matrix, i, j, maxNum) => {
   const res = [];
   const neighbors = getNeighborIdx(i, j, maxNum);
@@ -92,3 +91,65 @@ export const solveSudoku = (initMatrix, maxNum) => {
     return matrix;
   }
 };
+
+/**
+ * 检查数独关卡是否有唯一解
+ * @param {number[][]} board 
+ * @returns {number} 解的数量
+ */
+export const checkUniqueSolution = (board, solutions = 0, x = 0, y = 0) => {
+  const boardSize = board.length;
+
+  // Overflow to next row
+  if (y === boardSize) {
+    x += 1;
+    y = 0;
+  }
+
+  // If x equals boardSize, a solution is found
+  if (x === boardSize) {
+    return solutions + 1;
+  }
+
+  // If there is already more than one solution, no need to continue
+  if (solutions > 1) {
+    return solutions;
+  }
+
+  if (board[x][y] !== 0) {
+    // Skip this cell
+    return checkUniqueSolution(board, solutions, x, y + 1);
+  }
+
+  for (let i = 1; i <= boardSize; i++) {
+    if (isValid(board, x, y, i)) {
+      board[x][y] = i;
+      solutions = checkUniqueSolution(board, solutions, x, y + 1);
+      if (solutions > 1) break; // If there is already more than one solution, no need to continue.
+      board[x][y] = 0; // undo the move
+    }
+  }
+
+  return solutions;
+}
+
+function isValid(board, x, y, num) {
+  const boardSize = board.length;
+  // Check if `num` is not in same row
+  for(let i = 0; i < boardSize; i++) {
+    if(board[i][y] === num) return false;
+  }
+  // Check if `num` is not in same column
+  for(let i = 0; i < boardSize; i++) {
+    if(board[x][i] === num) return false;
+  }
+  // Check if `num` is not in same box
+  let startRow = x - x%3;
+  let startCol = y - y%3;
+  for(let i = 0; i < 3; i++) {
+    for(let j = 0; j < 3; j++) {
+      if(board[i + startRow][j + startCol] === num) return false;
+    }
+  }
+  return true;
+}

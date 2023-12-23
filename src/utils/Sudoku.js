@@ -1,4 +1,5 @@
 import { solveSudoku } from "./sudokuSolver";
+import { generateSudoku } from "./generateSudoku";
 
 const getRandomInt = (range = 9, scale = 1) => {
   return Math.floor((Math.random() * range) / scale);
@@ -80,14 +81,7 @@ class Sudoku {
     if (res) {
        // 在res的基础上挖空，根据难度挖空，挖空后保证有唯一解
        // 难度越高，挖空的越多。难度等级为1-5
-      this.board = res.map((x) =>
-        x.map((y) => {
-          if (getRandomInt(6, +this.configs.level)) {
-            return y;
-          }
-          return 0;
-        })
-      );
+      this.board = generateSudoku(res, +this.configs.level, 5);
     } else {
       this.board = matrix;
     }
