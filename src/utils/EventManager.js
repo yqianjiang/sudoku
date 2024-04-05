@@ -76,6 +76,13 @@ class EventManager {
     // 阻止默认
     event.preventDefault();
 
+    // Tab 切换标记模式
+    if (event.key === 'Tab') {
+      this.toggleNotesMode();
+      this.stage.render(this.selectedSquare);
+      return;
+    }
+
     const maxNum = this.configs.boardSize;
     // 方向键切换选中的方格
     if (event.key === 'ArrowUp') {
@@ -112,6 +119,16 @@ class EventManager {
       } else {
         this.gameBoard.fillNumber(this.selectedSquare.row, this.selectedSquare.col, number);
       }
+    }
+  }
+
+  fillNote(number) {
+    if (!this.selectedSquare) {
+      return;
+    }
+
+    if (number >= 0 && number <= this.configs.boardSize) {
+      this.gameBoard.fillNotes(this.selectedSquare.row, this.selectedSquare.col, number);
     }
   }
 

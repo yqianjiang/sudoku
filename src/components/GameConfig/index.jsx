@@ -67,7 +67,7 @@ const GameConfig = ({ onUpdate, onUpdateLevel }) => {
             <option value="2">{t('Easy')}</option>
             <option value="3">{t('Normal')}</option>
             <option value="4">{t('Hard')}</option>
-            {/* <option value="5">{t('Very Hard')}</option> */}
+            <option value="5">{t('Very Hard')}</option>
             {/* <option value="0">{t('Empty')}</option> */}
           </select>
         </label>
