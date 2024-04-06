@@ -38,7 +38,7 @@ class EventManager {
   }
 
   handleClick(event) {
-    if (this.gameBoard.gameState !== 'running') {
+    if (!this.gameBoard.is_running()) {
       return;
     }
 
@@ -70,7 +70,7 @@ class EventManager {
 
   // 键盘输入
   handleKeyDown(event) {
-    if (this.gameBoard.gameState !== 'running') {
+    if (!this.gameBoard.is_running()) {
       return;
     }
     // 阻止默认
@@ -115,9 +115,9 @@ class EventManager {
 
     if (number >= 0 && number <= this.configs.boardSize) {
       if (this.notesMode) {
-        this.gameBoard.fillNotes(this.selectedSquare.row, this.selectedSquare.col, number);
+        this.gameBoard.fill_notes(this.selectedSquare.row, this.selectedSquare.col, number);
       } else {
-        this.gameBoard.fillNumber(this.selectedSquare.row, this.selectedSquare.col, number);
+        this.gameBoard.fill_number(this.selectedSquare.row, this.selectedSquare.col, number);
       }
     }
   }
@@ -128,7 +128,7 @@ class EventManager {
     }
 
     if (number >= 0 && number <= this.configs.boardSize) {
-      this.gameBoard.fillNotes(this.selectedSquare.row, this.selectedSquare.col, number);
+      this.gameBoard.fill_notes(this.selectedSquare.row, this.selectedSquare.col, number);
     }
   }
 

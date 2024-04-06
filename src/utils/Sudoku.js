@@ -1,42 +1,60 @@
-import { solveSudoku } from "./sudokuSolver";
-import { generateSudoku } from "./generateSudoku";
+import { generate_sudoku, solve_sudoku } from "wasm-sudoku";
+import { LEVEL } from "./Config";
 
-const getRandomInt = (range = 9, scale = 1) => {
-  return Math.floor((Math.random() * range) / scale);
-};
-
-const initBoard = (maxNum) => {
-  const matrix = [];
-  for (let i = 0; i < maxNum; i++) {
-    matrix[i] = [];
-    for (let j = 0; j < maxNum; j++) {
-      matrix[i][j] = 0;
-    }
-  }
-
-  return matrix;
+const levelNumsMap = {
+  [LEVEL.VERY_EASY]: 48,
+  [LEVEL.EASY]: 40,
+  [LEVEL.NORMAL]: 35,
+  [LEVEL.HARD]: 30,
+  [LEVEL.VERY_HARD]: 26,
 }
 
-const initSudokuBoard = (maxNum) => {
-  const matrix = initBoard(maxNum);
-  // 把第一行乱序填入1-9
-  for (let k = 1; k < maxNum + 1; k++) {
-    // 随机选一个格子填数
-    let j = getRandomInt(maxNum);
-    while (matrix[0][j] > 0) {
-      // 重新选格子
-      j = getRandomInt(maxNum);
-    }
-    matrix[0][j] = k;
+function generateSudoku(level) {
+  // 生成初始的数独谜题，puzzle 是一个确保有唯一解的、已经填充26-30个数字的数独
+  let puzzle = generate_sudoku();
+  let solved = solve_sudoku(puzzle);
+
+  // 根据难度级别确定需要保留的数字数量
+  let numsToKeep = levelNumsMap[level];
+  let numsFilled = puzzle.filter((num) => num > 0).length;
+
+  // 计算需要增加的数字数量，然后从 puzzle 的空格坐标中随机选择，填入 solved 中对应的数字，这样可以确保生成的数独谜题有唯一解
+  let numsToAdd = numsToKeep - numsFilled;
+  if (numsToAdd <= 0) {
+    console.log("无需增加数字", { numsToKeep, numsFilled });
+    return puzzle;
   }
-  return matrix;
+  let emptyCells = [];
+  for (let i = 0; i < puzzle.length; i++) {
+    if (puzzle[i] === 0) {
+      emptyCells.push(i);
+    }
+  }
+
+  for (let i = 0; i < numsToAdd; i++) {
+    let randomIndex = Math.floor(Math.random() * emptyCells.length);
+    puzzle[emptyCells[randomIndex]] = solved[emptyCells[randomIndex]];
+    emptyCells.splice(randomIndex, 1);
+  }
+
+  console.log("生成数独谜题", { numsToKeep, numsFilled: puzzle.filter((num) => num > 0).length });
+  return puzzle;
+}
+
+
+const GameState = {
+  OVER: "over",
+  RUNNING: "running",
+  PAUSED: "paused",
+  WIN: "win",
 };
 
 class Sudoku {
-  constructor(configs) {
-    this.configs = configs;
+  constructor(boardSize, level) {
+    this.boardSize = boardSize;
+    this.level = level;
     this.originState = [];
-    this.gameState = "over";
+    this.gameState = GameState.OVER;
     this.spendTime = 0;
     this.timer = null;
     this.initGame();
@@ -44,10 +62,10 @@ class Sudoku {
   }
 
   solve() {
-    const maxNum = this.configs.boardSize;
-    const res = solveSudoku(this.board, maxNum);
+    const res = solve_sudoku(this.board);
     if (res) {
-      this.board = res.map((x) => x.map((y) => y));
+      console.log(res);
+      this.board = [...res];
       this.finishGame();
     } else {
       console.log("无解");
@@ -55,10 +73,9 @@ class Sudoku {
   }
 
   hint(x, y) {
-    const maxNum = this.configs.boardSize;
-    const res = solveSudoku(this.board, maxNum);
+    const res = solve_sudoku(this.board);
     if (res) {
-      return res[x][y];
+      return res[x * this.boardSize + y];
     }
     return 0;
   }
@@ -68,61 +85,43 @@ class Sudoku {
 
     const start = new Date().getTime();
 
-    // 随机开局，不一定有解 (基本上有解)
-    const maxNum = this.configs.boardSize;
-    let matrix = initSudokuBoard(maxNum);
-    let res = solveSudoku(matrix, maxNum);
-    let count = 1;
-    while (!res && count < 5) {
-      matrix = initSudokuBoard(maxNum);
-      res = solveSudoku(matrix, maxNum);
-      count++;
-    }
-    if (res) {
-       // 在res的基础上挖空，根据难度挖空，挖空后保证有唯一解
-       // 难度越高，挖空的越多。难度等级为1-5
-      this.board = generateSudoku(res, +this.configs.level, 5);
-    } else {
-      this.board = matrix;
-    }
-    this.originState = this.board.map((x) => x.map((y) => y));
+    // 随机开局
+    this.board = generateSudoku(this.level);
+    this.originState = [...this.board];
 
-    if (count > 1) {
-      console.log(count);
-      console.log("loaded, 用时", new Date().getTime() - start);
-    }
+    console.log("生成新的数独，用时", new Date().getTime() - start);
 
     this.initNotes();
   }
 
   initNotes() {
-    this.notes = this.board.map((row) => row.map(() => new Array(this.configs.boardSize).fill(false)));
+    this.notes = this.board.map(() => new Array(this.boardSize).fill(false));
   }
 
-  resetGame() {
+  reset_game() {
     this.restartTimer();
-    this.board = this.originState.map((x) => x.map((y) => y));
+    this.board = [...this.originState]
     this.initNotes();
     this.wrongCells = [];
-    this.gameState = "running";
+    this.gameState = GameState.RUNNING;
   }
 
   startGame() {
-    this.gameState = "running";
+    this.gameState = GameState.RUNNING;
     this.restartTimer();
   }
 
-  pause() {
-    this.gameState = "paused";
+  pause_game() {
+    this.gameState = GameState.PAUSED;
     this.stopTimer();
   }
 
-  resume() {
-    this.gameState = "running";
+  resume_game() {
+    this.gameState = GameState.RUNNING;
     this.resumeTimer();
   }
 
-  startNewGame() {
+  start_new_game() {
     this.stopTimer();
     this.initGame();
     this.startGame();
@@ -131,9 +130,7 @@ class Sudoku {
   restartTimer() {
     this.stopTimer();
     this.spendTime = 0;
-    this.timer = setInterval(() => {
-      this.spendTime++;
-    }, 1000);
+    this.resumeTimer();
   }
 
   stopTimer() {
@@ -148,36 +145,36 @@ class Sudoku {
 
   finishGame() {
     // 检查是否胜利
-    for (let row = 0; row < this.configs.boardSize; row++) {
-      for (let col = 0; col < this.configs.boardSize; col++) {
-        if (!this.checkNumber(row, col, this.board[row][col])) {
+    for (let row = 0; row < this.boardSize; row++) {
+      for (let col = 0; col < this.boardSize; col++) {
+        if (!this.checkNumber(row, col, this.get_number(row, col))) {
           return;
         }
       }
     }
 
-    this.gameState = "win";
+    this.gameState = GameState.WIN;
     this.stopTimer();
   }
 
-  isOriginal(row, col) {
+  is_origin_cell(row, col) {
     return this.originState[row][col] > 0;
   }
 
-  fillNotes(row, col, number) {
-    if (this.board[row][col] > 0) {
+  fill_notes(row, col, number) {
+    if (this.get_number(row, col) > 0) {
       return;
     }
 
-    this.notes[row][col][number - 1] = !this.notes[row][col][number - 1];
+    this.set_notes(row, col, this.get_notes(row, col).map((note, index) => index === number - 1 ? !note : note));
   }
 
-  fillNumber(row, col, number) {
+  fill_number(row, col, number) {
     // 检查是否可以填入
-    if (this.isOriginal(row, col)) {
+    if (this.is_origin_cell(row, col)) {
       return;
     }
-    this.board[row][col] = number;
+    this.set_number(row, col, number);
 
     // 检查是否填错
     if (number !== 0 && !this.checkNumber(row, col, number)) {
@@ -188,9 +185,9 @@ class Sudoku {
 
     // 检查是否填满
     let isFull = true;
-    for (let i = 0; i < this.configs.boardSize; i++) {
-      for (let j = 0; j < this.configs.boardSize; j++) {
-        if (this.board[i][j] === 0) {
+    for (let i = 0; i < this.boardSize; i++) {
+      for (let j = 0; j < this.boardSize; j++) {
+        if (this.get_number(i, j) === 0) {
           isFull = false;
           break;
         }
@@ -201,21 +198,50 @@ class Sudoku {
     }
   }
 
-  clearNumber(row, col) {
-    this.fillNumber(row, col, 0);
+  clear_number(row, col) {
+    this.fill_number(row, col, 0);
   }
 
-  getNumber(row, col) {
-    return this.board[row][col];
+  set_number(row, col, number) {
+    this.board[row * this.boardSize + col] = number;
   }
 
-  getBoard() {
+  get_number(row, col) {
+    return this.board[row * this.boardSize + col];
+  }
+
+  get_board() {
     return this.board;
   }
 
-  getNotes(row, col) {
-    return this.notes[row][col];
+  set_notes(row, col, notes) {
+    this.notes[row * this.boardSize + col] = notes;
   }
+
+  get_notes(row, col) {
+    return this.notes[row * this.boardSize + col];
+  }
+
+  get_board_size() {
+    return this.boardSize;
+  }
+
+  get_wrong_cells() {
+    return this.wrongCells;
+  }
+
+  is_running() {
+    return this.gameState === GameState.RUNNING;
+  }
+
+  is_paused() {
+    return this.gameState === GameState.PAUSED;
+  }
+
+  is_win() {
+    return this.gameState === GameState.WIN;
+  }
+
 
   // 检查填入的数字是否正确
   // 1. 检查同一行是否有重复
@@ -227,8 +253,8 @@ class Sudoku {
 
   // 检查同一行是否有重复
   checkRow(row, currCol, number) {
-    for (let col = 0; col < this.configs.boardSize; col++) {
-      if (col !== currCol && this.board[row][col] === number) {
+    for (let col = 0; col < this.boardSize; col++) {
+      if (col !== currCol && this.get_number(row, col) === number) {
         return false;
       }
     }
@@ -237,8 +263,8 @@ class Sudoku {
 
   // 检查同一列是否有重复
   checkCol(currRow, col, number) {
-    for (let row = 0; row < this.configs.boardSize; row++) {
-      if (row !== currRow && this.board[row][col] === number) {
+    for (let row = 0; row < this.boardSize; row++) {
+      if (row !== currRow && this.get_number(row, col) === number) {
         return false;
       }
     }
@@ -247,14 +273,14 @@ class Sudoku {
 
   // 检查同一九宫格是否有重复
   checkSquare(row, col, number) {
-    const squareSize = Math.sqrt(this.configs.boardSize);
+    const squareSize = Math.sqrt(this.boardSize);
     const startRow = Math.floor(row / squareSize) * squareSize;
     const startCol = Math.floor(col / squareSize) * squareSize;
 
     const currRow = row, currCol = col;
     for (let row = startRow; row < startRow + squareSize; row++) {
       for (let col = startCol; col < startCol + squareSize; col++) {
-        if (row !== currRow && col !== currCol && this.board[row][col] === number) {
+        if (row !== currRow && col !== currCol && this.get_number(row, col) === number) {
           return false;
         }
       }
