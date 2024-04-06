@@ -38,7 +38,7 @@ class EventManager {
   }
 
   handleClick(event) {
-    if (this.gameBoard.gameState !== 'running') {
+    if (!this.gameBoard.is_running()) {
       return;
     }
 
@@ -70,11 +70,18 @@ class EventManager {
 
   // 键盘输入
   handleKeyDown(event) {
-    if (this.gameBoard.gameState !== 'running') {
+    if (!this.gameBoard.is_running()) {
       return;
     }
     // 阻止默认
     event.preventDefault();
+
+    // Tab 切换标记模式
+    if (event.key === 'Tab') {
+      this.toggleNotesMode();
+      this.stage.render(this.selectedSquare);
+      return;
+    }
 
     const maxNum = this.configs.boardSize;
     // 方向键切换选中的方格
@@ -108,10 +115,20 @@ class EventManager {
 
     if (number >= 0 && number <= this.configs.boardSize) {
       if (this.notesMode) {
-        this.gameBoard.fillNotes(this.selectedSquare.row, this.selectedSquare.col, number);
+        this.gameBoard.fill_notes(this.selectedSquare.row, this.selectedSquare.col, number);
       } else {
-        this.gameBoard.fillNumber(this.selectedSquare.row, this.selectedSquare.col, number);
+        this.gameBoard.fill_number(this.selectedSquare.row, this.selectedSquare.col, number);
       }
+    }
+  }
+
+  fillNote(number) {
+    if (!this.selectedSquare) {
+      return;
+    }
+
+    if (number >= 0 && number <= this.configs.boardSize) {
+      this.gameBoard.fill_notes(this.selectedSquare.row, this.selectedSquare.col, number);
     }
   }
 

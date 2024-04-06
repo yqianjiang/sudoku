@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import config from "../../utils/Config.js";
+import config, { LEVEL } from "../../utils/Config.js";
 import { useTranslation } from "react-i18next";
 
 // import PropTypes from "prop-types";
@@ -7,7 +7,7 @@ import { useTranslation } from "react-i18next";
 const GameConfig = ({ onUpdate, onUpdateLevel }) => {
   const { t } = useTranslation();
 
-  const [level, setLevel] = useState(3);
+  const [level, setLevel] = useState(LEVEL.NORMAL);
   const [highlightNumbers, setHighlightNumbers] = useState(true);
   const [highlightCells, setHighlightCells] = useState(true);
   const [showErrors, setShowErrors] = useState(true);
@@ -61,20 +61,20 @@ const GameConfig = ({ onUpdate, onUpdateLevel }) => {
     <div>
       <div>
         <label>
-          {t('Level:')}
+          {t("Level:")}
           <select value={level} onChange={handleChangeLevel}>
-            <option value="1">{t('Very Easy')}</option>
-            <option value="2">{t('Easy')}</option>
-            <option value="3">{t('Normal')}</option>
-            <option value="4">{t('Hard')}</option>
-            {/* <option value="5">{t('Very Hard')}</option> */}
+            <option value={LEVEL.VERY_EASY}>{t("Very Easy")}</option>
+            <option value={LEVEL.EASY}>{t("Easy")}</option>
+            <option value={LEVEL.NORMAL}>{t("Normal")}</option>
+            <option value={LEVEL.HARD}>{t("Hard")}</option>
+            <option value={LEVEL.VERY_HARD}>{t("Very Hard")}</option>
             {/* <option value="0">{t('Empty')}</option> */}
           </select>
         </label>
       </div>
       <div>
         <label>
-          {t('Highlight Numbers:')}
+          {t("Highlight Numbers:")}
           <input
             type="checkbox"
             checked={highlightNumbers}
@@ -84,7 +84,7 @@ const GameConfig = ({ onUpdate, onUpdateLevel }) => {
       </div>
       <div>
         <label>
-          {t('Highlight Cells:')}
+          {t("Highlight Cells:")}
           <input
             type="checkbox"
             checked={highlightCells}
@@ -94,7 +94,7 @@ const GameConfig = ({ onUpdate, onUpdateLevel }) => {
       </div>
       <div>
         <label>
-          {t('Show Errors:')}
+          {t("Show Errors:")}
           <input
             type="checkbox"
             checked={showErrors}

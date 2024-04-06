@@ -138,17 +138,16 @@ class Stage {
 
   // 填数字，numbers 是一个 9x9 的二维数组，每个元素是一个数字，0 表示空
   renderNumbers() {
-    const numbers = this.gameBoard.getBoard();
     const cellSize = this.theme.cellSize;
     const fontSize = 0.6 * cellSize;
     this.ctx.font = `${fontSize}px Arial`;
     this.ctx.textAlign = 'center';
     this.ctx.textBaseline = 'middle';
 
-    for (let row = 0; row < numbers.length; row++) {
-      for (let col = 0; col < numbers[row].length; col++) {
-        const number = numbers[row][col];
-        const isOriginal = this.gameBoard.isOriginal(row, col); // Check if the number is original
+    for (let row = 0; row < this.gameBoard.get_board_size(); row++) {
+      for (let col = 0; col < this.gameBoard.get_board_size(); col++) {
+        const number = this.gameBoard.get_number(row, col);
+        const isOriginal = this.gameBoard.is_origin_cell(row, col); // Check if the number is original
 
         if (number !== 0) {
           this.ctx.fillStyle = this.theme.textColor;
@@ -165,7 +164,6 @@ class Stage {
   }
 
   renderNotes() {
-    const numbers = this.gameBoard.getBoard();
     const size = Math.sqrt(this.configs.boardSize);
     const cellSize = this.theme.cellSize;
     const fontSize = 0.26 * cellSize;
@@ -175,13 +173,13 @@ class Stage {
     this.ctx.textAlign = 'center';
     this.ctx.textBaseline = 'middle';
 
-    for (let row = 0; row < numbers.length; row++) {
-      for (let col = 0; col < numbers[row].length; col++) {
-        const number = numbers[row][col];
+    for (let row = 0; row < this.gameBoard.get_board_size(); row++) {
+      for (let col = 0; col < this.gameBoard.get_board_size(); col++) {
+        const number = this.gameBoard.get_number(row, col);
 
         if (number === 0) {
           // Draw notes, notes 为一个等同于 boardSize 的一维 boolean 数组，每个数字有固定的渲染位置，为 true 时渲染
-          const notes = this.gameBoard.getNotes(row, col);
+          const notes = this.gameBoard.get_notes(row, col);
 
           // 计算当前格子的左上角
           const startX = col * cellSize;
@@ -212,14 +210,16 @@ class Stage {
     this.ctx.fillRect(square.col * cellSize, square.row * cellSize, cellSize, cellSize);
     this.ctx.strokeRect(square.col * cellSize, square.row * cellSize, cellSize, cellSize);
   }
-  
+
   drawWrongCells() {
     const cellSize = this.theme.cellSize;
     const errorColor = this.theme.errorColor;
-    
+
     this.ctx.fillStyle = errorColor;
-    for (let i = 0; i < this.gameBoard.wrongCells.length; i++) {
-      const cell = this.gameBoard.wrongCells[i];
+    const wrongCells = this.gameBoard.get_wrong_cells();
+    console.log({ wrongCells });
+    for (let i = 0; i < wrongCells.length; i++) {
+      const cell = wrongCells[i];
       this.ctx.fillRect(cell.col * cellSize, cell.row * cellSize, cellSize, cellSize);
     }
   }
@@ -229,16 +229,15 @@ class Stage {
     const cellSize = this.theme.cellSize;
     const highlightColor = this.theme.highlightNumberColor;
 
-    const numbers = this.gameBoard.getBoard();
-    const selectedNumber = numbers[square.row][square.col];
+    const selectedNumber = this.gameBoard.get_number(square.row, square.col);
 
     if (!selectedNumber) {
       return;
     }
 
-    for (let row = 0; row < numbers.length; row++) {
-      for (let col = 0; col < numbers[row].length; col++) {
-        if (numbers[row][col] === selectedNumber) {
+    for (let row = 0; row < this.gameBoard.get_board_size(); row++) {
+      for (let col = 0; col < this.gameBoard.get_board_size(); col++) {
+        if (this.gameBoard.get_number(row, col) === selectedNumber) {
           this.ctx.fillStyle = highlightColor;
           this.ctx.fillRect(col * cellSize, row * cellSize, cellSize, cellSize);
         }

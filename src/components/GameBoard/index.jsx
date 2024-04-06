@@ -4,6 +4,7 @@ import EventManager from "../../utils/EventManager.js";
 import Sudoku from "../../utils/Sudoku.js";
 import config from "../../utils/Config.js";
 import GameConfig from "../GameConfig";
+import init from "wasm-sudoku";
 
 import { useTranslation } from "react-i18next";
 
@@ -22,6 +23,7 @@ const GameBoard = () => {
   const gameBoardRef = useRef(null);
   const stageRef = useRef(null);
   const eventManagerRef = useRef(null);
+  const timerRef = useRef(null);
 
   const [boardSize, setBoardSize] = useState(9);
   const [isPaused, setIsPaused] = useState(false);
@@ -33,44 +35,48 @@ const GameBoard = () => {
   }
 
   useEffect(() => {
-    loadConfig();
-    const gameBoard = gameBoardRef.current || new Sudoku(config);
-    gameBoard.startNewGame();
-    gameBoardRef.current = gameBoard;
-    const canvas = canvasRef.current;
-    const stage = stageRef.current || new Stage(canvas, gameBoard, config);
-    stageRef.current = stage;
-    const eventManager = eventManagerRef.current || new EventManager(stage, gameBoard, config);
-    eventManagerRef.current = eventManager;
+    init().then(() => {
+      loadConfig();
+      const gameBoard =
+        gameBoardRef.current || new Sudoku(config.boardSize, config.level);
+      gameBoardRef.current = gameBoard;
+      const canvas = canvasRef.current;
+      const stage = stageRef.current || new Stage(canvas, gameBoard, config);
+      stageRef.current = stage;
+      const eventManager =
+        eventManagerRef.current || new EventManager(stage, gameBoard, config);
+      eventManagerRef.current = eventManager;
 
-    stage.render();
-
-    // 计时器
-    const timer = setInterval(() => {
-      if (gameBoardRef.current.gameState === "win") {
-        clearInterval(timer);
-        stage.renderWin();
-        return;
-      }
-
-      if (gameBoardRef.current.gameState !== "running") {
-        return;
-      }
-      setElapsedTime(gameBoardRef.current.spendTime);
-    }, 1000);
+      handleNewGame();
+    });
 
     return () => {
-      clearInterval(timer);
+      clearInterval(timerRef.current);
     };
   }, []);
 
+  function startTimer() {
+    clearInterval(timerRef.current);
+    timerRef.current = setInterval(() => {
+      setElapsedTime((prev) => prev + 1);
+    }, 1000);
+  }
+
+  useEffect(() => {
+    if (!isPaused) {
+      startTimer();
+    } else {
+      clearInterval(timerRef.current);
+    }
+  }, [isPaused]);
+
   const handlePauseResume = () => {
-    if (gameBoardRef.current.gameState === "running") {
-      gameBoardRef.current.pause();
+    if (!isPaused) {
+      gameBoardRef.current.pause_game();
       stageRef.current.renderPause(t("Pause"));
       setIsPaused(true);
     } else {
-      gameBoardRef.current.resume();
+      gameBoardRef.current.resume_game();
       stageRef.current.render();
       setIsPaused(false);
     }
@@ -78,26 +84,38 @@ const GameBoard = () => {
 
   const handleRestart = () => {
     setIsPaused(false);
-    gameBoardRef.current.resetGame();
+    setElapsedTime(0);
+    gameBoardRef.current.reset_game();
     stageRef.current.render();
   };
-  
+
   const handleNewGame = () => {
-    gameBoardRef.current.startNewGame();
+    setIsPaused(false);
+    setElapsedTime(0);
+    gameBoardRef.current.start_new_game();
     stageRef.current.render();
+    console.log({
+      board: gameBoardRef.current.get_board(),
+      filledNumCount: gameBoardRef.current
+        .get_board()
+        .filter((num) => num !== 0).length,
+      isRunning: gameBoardRef.current.is_running(),
+    });
   };
 
   const handleUpdateConfig = () => {
     if (config.boardSize !== prevBoardSize) {
       prevBoardSize = config.boardSize;
       setBoardSize(config.boardSize);
-      gameBoardRef.current.startNewGame();
+      gameBoardRef.current.set_board_size(config.boardSize);
+      gameBoardRef.current.start_new_game();
       stageRef.current.setCanvasSize();
       stageRef.current.render();
+      return;
     }
-
+    gameBoardRef.current.set_level(config.level);
     stageRef.current.render(eventManagerRef.current.selectedSquare);
-  }
+  };
 
   return (
     <div>
@@ -108,7 +126,7 @@ const GameBoard = () => {
             className="number-button"
             key={num}
             onClick={() => {
-              if (gameBoardRef.current.gameState !== "running") {
+              if (isPaused) {
                 return;
               }
               eventManagerRef.current.fillNumber(num);
@@ -127,7 +145,7 @@ const GameBoard = () => {
         <button
           className="action-button"
           onClick={() => {
-            if (gameBoardRef.current.gameState !== "running") {
+            if (isPaused) {
               return;
             }
             eventManagerRef.current.fillNumber(0);
@@ -141,7 +159,7 @@ const GameBoard = () => {
         <button
           className="action-button"
           onClick={() => {
-            if (gameBoardRef.current.gameState !== "running") {
+            if (isPaused) {
               return;
             }
             eventManagerRef.current.toggleNotesMode();
@@ -154,11 +172,14 @@ const GameBoard = () => {
         <button
           className="action-button"
           onClick={() => {
-            if (gameBoardRef.current.gameState !== "running") {
+            if (isPaused) {
               return;
             }
             const selected = eventManagerRef.current.selectedSquare;
-            const hintNum = gameBoardRef.current.hint(selected.row, selected.col);
+            const hintNum = gameBoardRef.current.hint(
+              selected.row,
+              selected.col
+            );
             eventManagerRef.current.fillNumber(hintNum);
             stageRef.current.render(selected);
           }}
@@ -170,19 +191,20 @@ const GameBoard = () => {
         <button
           className="action-button"
           onClick={() => {
-            if (gameBoardRef.current.gameState !== "running") {
+            if (isPaused) {
               return;
             }
             gameBoardRef.current.solve();
             stageRef.current.render();
+            setIsPaused(true);
           }}
         >
           {t("Solve")}
         </button>
       </div>
       <div>
-        <button onClick={handleRestart}>{t('Restart this Game')}</button>
-        <button onClick={handleNewGame}>{t('New Game')}</button>
+        <button onClick={handleRestart}>{t("Restart this Game")}</button>
+        <button onClick={handleNewGame}>{t("New Game")}</button>
       </div>
       <GameConfig onUpdate={handleUpdateConfig} onUpdateLevel={handleNewGame} />
     </div>

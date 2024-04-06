@@ -1,3 +1,12 @@
+export const LEVEL = {
+  VERY_EASY: 0,
+  EASY: 1,
+  NORMAL: 2,
+  HARD: 3,
+  VERY_HARD: 4,
+}
+
+
 class Config {
   constructor() {
     this.configs = {
@@ -5,7 +14,7 @@ class Config {
       highlightCells: true,
       showErrors: true,
       boardSize: 9,
-      level: 3,
+      level: LEVEL.NORMAL,
     };
     this.initConfigs();
   }
