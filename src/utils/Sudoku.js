@@ -158,7 +158,7 @@ class Sudoku {
   }
 
   is_origin_cell(row, col) {
-    return this.originState[row][col] > 0;
+    return this.originState[row * this.boardSize + col] > 0;
   }
 
   fill_notes(row, col, number) {
@@ -178,9 +178,9 @@ class Sudoku {
 
     // 检查是否填错
     if (number !== 0 && !this.checkNumber(row, col, number)) {
-      this.wrongCells.push({ row, col });
+      this.wrongCells.push([row, col]);
     } else {
-      this.wrongCells = this.wrongCells.filter((cell) => cell.row !== row || cell.col !== col);
+      this.wrongCells = this.wrongCells.filter((cell) => cell[0] !== row || cell[1] !== col);
     }
 
     // 检查是否填满

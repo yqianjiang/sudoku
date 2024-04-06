@@ -217,10 +217,9 @@ class Stage {
 
     this.ctx.fillStyle = errorColor;
     const wrongCells = this.gameBoard.get_wrong_cells();
-    console.log({ wrongCells });
     for (let i = 0; i < wrongCells.length; i++) {
       const cell = wrongCells[i];
-      this.ctx.fillRect(cell.col * cellSize, cell.row * cellSize, cellSize, cellSize);
+      this.ctx.fillRect(cell[1] * cellSize, cell[0] * cellSize, cellSize, cellSize);
     }
   }
 
