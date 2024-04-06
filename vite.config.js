@@ -4,7 +4,7 @@ import wasmPack from 'vite-plugin-wasm-pack'
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react(), wasmPack(['../wasm-sudoku'])],
+  plugins: [react(), wasmPack(['./wasm-sudoku'])],
   build: {
     rollupOptions: {
       input: {

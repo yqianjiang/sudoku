@@ -1,0 +1,17 @@
+{
+  "name": "wasm-sudoku",
+  "collaborators": [
+    "yqianjiang <y.jiang.psy@gmail.com>"
+  ],
+  "version": "0.1.0",
+  "files": [
+    "wasm_sudoku_bg.wasm",
+    "wasm_sudoku.js",
+    "wasm_sudoku.d.ts"
+  ],
+  "module": "wasm_sudoku.js",
+  "types": "wasm_sudoku.d.ts",
+  "sideEffects": [
+    "./snippets/*"
+  ]
+}
