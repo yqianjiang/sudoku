@@ -58,6 +58,10 @@ class Stage {
     this.drawGameBoard();
     this.renderNotes();
     this.renderNumbers();
+
+    if (this.gameBoard.is_win()) {
+      this.renderWin();
+    }
   }
 
   // 渲染蒙层
@@ -81,6 +85,7 @@ class Stage {
   }
 
   renderWin() {
+    console.log('You Win!');
     this.renderMask(0.3, true);
     this.renderText('You Win!', this.canvas.width / 2 / this.scaleFactor, this.canvas.height / 2 / this.scaleFactor);
   }

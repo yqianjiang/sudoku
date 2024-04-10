@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 
 // import PropTypes from "prop-types";
 
-const GameConfig = ({ onUpdate, onUpdateLevel }) => {
+const GameConfig = ({ onUpdate }) => {
   const { t } = useTranslation();
 
   const [level, setLevel] = useState(LEVEL.NORMAL);
@@ -54,7 +54,7 @@ const GameConfig = ({ onUpdate, onUpdateLevel }) => {
     const newLevel = e.target.value;
     setLevel(newLevel);
     config.updateConfigs({ level: newLevel });
-    onUpdateLevel();
+    onUpdate();
   }
 
   return (

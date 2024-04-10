@@ -27,6 +27,7 @@ const GameBoard = () => {
 
   const [boardSize, setBoardSize] = useState(9);
   const [isPaused, setIsPaused] = useState(false);
+  const [gameStarted, setGameStarted] = useState(false);
   const [elapsedTime, setElapsedTime] = useState(0);
 
   function loadConfig() {
@@ -34,20 +35,25 @@ const GameBoard = () => {
     prevBoardSize = config.boardSize;
   }
 
+  const handleWin = () => {
+    clearInterval(timerRef.current);
+    setGameStarted(false);
+  };
+
   useEffect(() => {
     init().then(() => {
       loadConfig();
       const gameBoard =
-        gameBoardRef.current || new Sudoku(config.boardSize, config.level);
+        gameBoardRef.current ||
+        new Sudoku(config.boardSize, config.level, handleWin);
       gameBoardRef.current = gameBoard;
       const canvas = canvasRef.current;
       const stage = stageRef.current || new Stage(canvas, gameBoard, config);
       stageRef.current = stage;
+      handleNewGame();
       const eventManager =
         eventManagerRef.current || new EventManager(stage, gameBoard, config);
       eventManagerRef.current = eventManager;
-
-      handleNewGame();
     });
 
     return () => {
@@ -85,6 +91,7 @@ const GameBoard = () => {
   const handleRestart = () => {
     setIsPaused(false);
     setElapsedTime(0);
+    setGameStarted(true);
     gameBoardRef.current.reset_game();
     stageRef.current.render();
   };
@@ -92,29 +99,29 @@ const GameBoard = () => {
   const handleNewGame = () => {
     setIsPaused(false);
     setElapsedTime(0);
+    setGameStarted(true);
     gameBoardRef.current.start_new_game();
     stageRef.current.render();
-    console.log({
-      board: gameBoardRef.current.get_board(),
-      filledNumCount: gameBoardRef.current
-        .get_board()
-        .filter((num) => num !== 0).length,
-      isRunning: gameBoardRef.current.is_running(),
-    });
   };
 
   const handleUpdateConfig = () => {
+    let restart = false;
+    if (gameBoardRef.current.level !== config.level) {
+      gameBoardRef.current.set_level(config.level);
+      restart = true;
+    }
     if (config.boardSize !== prevBoardSize) {
       prevBoardSize = config.boardSize;
       setBoardSize(config.boardSize);
       gameBoardRef.current.set_board_size(config.boardSize);
-      gameBoardRef.current.start_new_game();
       stageRef.current.setCanvasSize();
-      stageRef.current.render();
-      return;
+      restart = true;
     }
-    gameBoardRef.current.set_level(config.level);
-    stageRef.current.render(eventManagerRef.current.selectedSquare);
+    if (restart) {
+      handleNewGame();
+    } else {
+      stageRef.current.render(eventManagerRef.current.selectedSquare);
+    }
   };
 
   return (
@@ -137,76 +144,85 @@ const GameBoard = () => {
           </button>
         ))}
       </div>
+      <div className="number-buttons">
+        {Array.from({ length: boardSize }, (_, i) => i + 1).map((num) => (
+          <button
+            className="number-button notes-button"
+            key={num}
+            onClick={() => {
+              if (isPaused) {
+                return;
+              }
+              eventManagerRef.current.fillNote(num);
+              stageRef.current.render(eventManagerRef.current.selectedSquare);
+            }}
+          >
+            {num}
+          </button>
+        ))}
+      </div>
       <div className="action-buttons">
         <span className="game-timer">{formatTime(elapsedTime)}</span>
-        <button className="action-button" onClick={handlePauseResume}>
-          {isPaused ? t("Resume") : t("Pause")}
-        </button>
-        <button
-          className="action-button"
-          onClick={() => {
-            if (isPaused) {
-              return;
-            }
-            eventManagerRef.current.fillNumber(0);
-            stageRef.current.render(eventManagerRef.current.selectedSquare);
-          }}
-        >
-          {t("Erase")}
-        </button>
+        {gameStarted && (
+          <>
+            <button className="action-button" onClick={handlePauseResume}>
+              {isPaused ? t("Resume") : t("Pause")}
+            </button>
 
-        {/* 切换笔记模式的按钮 */}
-        <button
-          className="action-button"
-          onClick={() => {
-            if (isPaused) {
-              return;
-            }
-            eventManagerRef.current.toggleNotesMode();
-            stageRef.current.render(eventManagerRef.current.selectedSquare);
-          }}
-        >
-          {eventManagerRef?.current?.notesMode ? t("Notes On") : t("Notes Off")}
-        </button>
-        {/* 提示 */}
-        <button
-          className="action-button"
-          onClick={() => {
-            if (isPaused) {
-              return;
-            }
-            const selected = eventManagerRef.current.selectedSquare;
-            const hintNum = gameBoardRef.current.hint(
-              selected.row,
-              selected.col
-            );
-            eventManagerRef.current.fillNumber(hintNum);
-            stageRef.current.render(selected);
-          }}
-        >
-          {t("Hint")}
-        </button>
+            <button
+              className="action-button"
+              onClick={() => {
+                if (isPaused) {
+                  return;
+                }
+                eventManagerRef.current.fillNumber(0);
+                stageRef.current.render(eventManagerRef.current.selectedSquare);
+              }}
+            >
+              {t("Erase")}
+            </button>
 
-        {/* 解答 */}
-        <button
-          className="action-button"
-          onClick={() => {
-            if (isPaused) {
-              return;
-            }
-            gameBoardRef.current.solve();
-            stageRef.current.render();
-            setIsPaused(true);
-          }}
-        >
-          {t("Solve")}
-        </button>
+            {/* 提示 */}
+            <button
+              className="action-button"
+              onClick={() => {
+                if (isPaused) {
+                  return;
+                }
+                const selected = eventManagerRef.current.selectedSquare;
+                const hintNum = gameBoardRef.current.hint(
+                  selected.row,
+                  selected.col
+                );
+                eventManagerRef.current.fillNumber(hintNum);
+                stageRef.current.render(selected);
+              }}
+            >
+              {t("Hint")}
+            </button>
+
+            {/* 解答 */}
+            <button
+              className="action-button"
+              onClick={() => {
+                if (isPaused) {
+                  return;
+                }
+                gameBoardRef.current.solve();
+                stageRef.current.render();
+                setIsPaused(true);
+              }}
+            >
+              {t("Solve")}
+            </button>
+          </>
+        )}
       </div>
       <div>
         <button onClick={handleRestart}>{t("Restart this Game")}</button>
         <button onClick={handleNewGame}>{t("New Game")}</button>
       </div>
-      <GameConfig onUpdate={handleUpdateConfig} onUpdateLevel={handleNewGame} />
+      <GameConfig onUpdate={handleUpdateConfig} />
     </div>
   );
 };
