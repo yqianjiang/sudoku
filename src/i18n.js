@@ -13,21 +13,19 @@ const resources = {
       "Highlight Cells:": "Highlight Cells:",
       "Show Errors:": "Show Errors:",
       "Level": "Level:",
-      "Very Easy": "Very Easy",
+      "Very Easy": "Beginner",
       "Easy": "Easy",
       "Normal": "Normal",
       "Hard": "Hard",
       "Empty": "Empty",
-      "Very Hard": "Very Hard",
+      "Very Hard": "Expert",
       "New Game": "New Game",
       "Restart this Game": "Restart this Game",
       "Resume": "Resume",
-      "Pause": "Pause",
+      "Pause": "Paused",
       Erase: "Erase",
       Solve: "Solve",
       Hint: "Hint",
-      "Notes On": "Notes On",
-      "Notes Off": "Notes Off",
     }
   },
   zh: {
@@ -38,21 +36,19 @@ const resources = {
       "Highlight Cells:": "高亮单元格:",
       "Show Errors:": "显示错误:",
       "Level": "难度:",
-      "Very Easy": "非常简单",
+      "Very Easy": "入门",
       "Easy": "简单",
       "Normal": "普通",
       "Hard": "困难",
-      "Very Hard": "非常困难",
+      "Very Hard": "专家",
       "Empty": "空白",
       "New Game": "新游戏",
       "Restart this Game": "重玩该局",
       "Resume": "继续",
-      "Pause": "暂停",
+      "Pause": "暂停中",
       Erase: "擦除",
       Solve: "解答",
       Hint: "提示",
-      "Notes On": "笔记(开)",
-      "Notes Off": "笔记(关)",
     }
   },
   ja: {
@@ -63,11 +59,11 @@ const resources = {
       "Highlight Cells:": "ハイライトセル:",
       "Show Errors:": "エラーを表示:",
       "Level": "レベル:",
-      "Very Easy": "とても簡単",
+      "Very Easy": "初心者",
       "Easy": "簡単",
       "Normal": "普通",
       "Hard": "ハード",
-      "Very Hard": "とてもハード",
+      "Very Hard": "エキスパート",
       "Empty": "空白",
       "New Game": "新しいゲーム",
       "Restart this Game": "このゲームを再起動する",
@@ -76,8 +72,6 @@ const resources = {
       Erase: "消す",
       Solve: "解く",
       Hint: "ヒント",
-      "Notes On": "メモ(オン)",
-      "Notes Off": "メモ(オフ)",
     }
   },
 };
@@ -95,4 +89,4 @@ i18n
     }
   });
 
-  export default i18n;
+export default i18n;

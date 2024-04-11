@@ -147,6 +147,17 @@ class Sudoku {
     this.set_notes(row, col, currentNotes.map((note, index) => index === number - 1 ? !note : note));
   }
 
+  checkWrongCellsRemovable() {
+    const wrongCells = [];
+    for (let i = 0; i < this.wrongCells.length; i++) {
+      const [row, col] = this.wrongCells[i];
+      if (!this.checkNumber(row, col, this.get_number(row, col))) {
+        wrongCells.push([row, col]);
+      }
+    }
+    this.wrongCells = wrongCells;
+  }
+
   fill_number(row, col, number) {
     // 检查是否可以填入
     if (this.is_origin_cell(row, col)) {
@@ -174,6 +185,8 @@ class Sudoku {
     if (isFull) {
       this.finishGame();
     }
+
+    this.checkWrongCellsRemovable();
   }
 
   clear_number(row, col) {

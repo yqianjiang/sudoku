@@ -14,7 +14,7 @@
 .number-button {
   background-color: #fff;
   border: 1px solid #000;
-  color: #000;
+  color: #0038ff;
   cursor: pointer;
   font-size: calc(0.6 * var(--cell-size));
   width: var(--cell-size);
@@ -24,11 +24,12 @@
   padding: 0;
   box-sizing: border-box;
   text-align: center;
-  font-weight: bold;
 }
 
 .notes-button {
-  font-weight: normal;
+  color: #666;
+  border-color: #999;
+  font-size: calc(0.4 * var(--cell-size));
 }
 
 /* 避免border重叠 */

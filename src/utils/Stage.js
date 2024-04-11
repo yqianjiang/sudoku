@@ -9,13 +9,12 @@ class Stage {
 
     this.theme = {
       background: '#fff',
-      highlightColor: '#99ddff',
-      highlightNumberColor: '#66bbff',
-      selectedStrokeColor: '#0055FF',
+      highlightColor: '#C0EAFF',
+      highlightNumberColor: '#85C9FF',
       boardStrokeColor: '#336699',
-      errorColor: '#ff0055',
+      errorColor: '#FF8585',
       textColor: '#333',
-      textColorPlayer: '#666',
+      textColorPlayer: '#0038FF',
       boldLineWidth: 3,
       normalLineWidth: 1,
       cellSize: 34,
@@ -61,6 +60,8 @@ class Stage {
 
     if (this.gameBoard.is_win()) {
       this.renderWin();
+    } else if (this.gameBoard.is_paused()) {
+      this.renderPause();
     }
   }
 
@@ -85,8 +86,7 @@ class Stage {
   }
 
   renderWin() {
-    console.log('You Win!');
-    this.renderMask(0.3, true);
+    this.renderMask(0.5, true);
     this.renderText('You Win!', this.canvas.width / 2 / this.scaleFactor, this.canvas.height / 2 / this.scaleFactor);
   }
 
@@ -155,11 +155,11 @@ class Stage {
         const isOriginal = this.gameBoard.is_origin_cell(row, col); // Check if the number is original
 
         if (number !== 0) {
-          this.ctx.fillStyle = this.theme.textColor;
           if (isOriginal) {
             this.ctx.font = `${fontSize}px Arial`;
+            this.ctx.fillStyle = this.theme.textColor;
           } else {
-            this.ctx.font = `bold ${fontSize}px Arial`; // Set font to bold for player-filled numbers
+            this.ctx.fillStyle = this.theme.textColorPlayer;
           }
 
           this.ctx.fillText(number, col * cellSize + cellSize / 2, row * cellSize + cellSize / 2);
@@ -206,14 +206,10 @@ class Stage {
   // 画选中的方格
   drawSelectedSquare(square) {
     const cellSize = this.theme.cellSize;
-    const boldLineWidth = this.theme.boldLineWidth;
-
-    this.ctx.lineWidth = boldLineWidth;
-    this.ctx.strokeStyle = this.theme.selectedStrokeColor;
     this.ctx.fillStyle = this.theme.highlightNumberColor;
 
     this.ctx.fillRect(square.col * cellSize, square.row * cellSize, cellSize, cellSize);
-    this.ctx.strokeRect(square.col * cellSize, square.row * cellSize, cellSize, cellSize);
+    // this.ctx.strokeRect(square.col * cellSize, square.row * cellSize, cellSize, cellSize);
   }
 
   drawWrongCells() {
@@ -221,10 +217,11 @@ class Stage {
     const errorColor = this.theme.errorColor;
 
     this.ctx.fillStyle = errorColor;
+    const lineWidth = this.theme.normalLineWidth / 2;
     const wrongCells = this.gameBoard.get_wrong_cells();
     for (let i = 0; i < wrongCells.length; i++) {
       const cell = wrongCells[i];
-      this.ctx.fillRect(cell[1] * cellSize, cell[0] * cellSize, cellSize, cellSize);
+      this.ctx.fillRect(cell[1] * cellSize + lineWidth, cell[0] * cellSize + lineWidth, cellSize - lineWidth, cellSize - lineWidth);
     }
   }
 

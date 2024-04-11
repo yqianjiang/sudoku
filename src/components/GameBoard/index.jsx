@@ -36,7 +36,7 @@ const GameBoard = () => {
   }
 
   const handleWin = () => {
-    clearInterval(timerRef.current);
+    setIsPaused(true);
     setGameStarted(false);
   };
 
@@ -210,7 +210,6 @@ const GameBoard = () => {
                 }
                 gameBoardRef.current.solve();
                 stageRef.current.render();
-                setIsPaused(true);
               }}
             >
               {t("Solve")}
