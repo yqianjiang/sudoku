@@ -84,7 +84,7 @@ const GameBoard = () => {
   const handlePauseResume = () => {
     if (!isPaused) {
       gameBoardRef.current.pause_game();
-      stageRef.current.renderPause(t("Pause"));
+      stageRef.current.renderPause(t("Paused"));
       setIsPaused(true);
     } else {
       gameBoardRef.current.resume_game();
