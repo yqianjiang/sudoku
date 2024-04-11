@@ -29,24 +29,26 @@ function App() {
 
   return (
     <>
-      {languages.map((language, idx) => (
-        <Fragment key={'lang' + language.code}>
-          {currLang === language.code ? (
-            <span key={language.code} style={{ fontWeight: "bold" }}>
-              {language.label}
-            </span>
-          ) : (
-            <a
-              key={language.code}
-              href={`/${language.code}`}
-              onClick={() => handleLanguageChange(language.code)}
-            >
-              {language.label}
-            </a>
-          )}
-          {idx !== languages.length - 1 && " | "}
-        </Fragment>
-      ))}
+      <div style={{ marginBottom: "10px" }}>
+        {languages.map((language, idx) => (
+          <Fragment key={"lang" + language.code}>
+            {currLang === language.code ? (
+              <span key={language.code} style={{ fontWeight: "bold" }}>
+                {language.label}
+              </span>
+            ) : (
+              <a
+                key={language.code}
+                href={`/${language.code}`}
+                onClick={() => handleLanguageChange(language.code)}
+              >
+                {language.label}
+              </a>
+            )}
+            {idx !== languages.length - 1 && " | "}
+          </Fragment>
+        ))}
+      </div>
       <GameBoard />
     </>
   );

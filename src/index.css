@@ -1,22 +1,4 @@
-:root {
-  --bg-gray: #C0C0C0;
-}
-
-html {
-  background-color: var(--bg-gray);
-  display: flex;
-  justify-content: center;
-}
-
-body {
-  overflow: auto;
-  font-family: Arial, sans-serif;
-  margin: 0;
-  padding: 12px;
-  position: relative;
-}
-
-.game-intros {
+.game-card {
   max-width: 800px;
   margin: auto;
   padding: 16px;
@@ -31,11 +13,42 @@ ol li {
   margin: 10px 0;
 }
 
+:root {
+  --primary-color: #ffa010;
+  --text-color: #333;
+  --text-color-secondary: #666;
+}
+
+html,
+body {
+  padding: 0;
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
+    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+  line-height: 1.6;
+  font-size: 18px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
 a {
+  color: var(--text-color);
   text-decoration: none;
-  color: #0073e6;
 }
 
 a:hover {
-  text-decoration: underline;
+  color: var(--primary-color);
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+main {
+  padding: 20px;
+  background-color: #f5f5f6;
+  min-height: 100vh;
 }
