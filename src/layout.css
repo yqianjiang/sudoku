@@ -86,3 +86,38 @@ header .container {
   max-width: 1200px;
   margin: 0 auto;
 }
+
+/* 移动端样式 */
+@media (max-width: 768px) {
+  .container {
+    padding: 0 20px;
+  }
+
+  .header {
+    padding: 10px 0;
+  }
+
+  .nav {
+    display: none;
+  }
+
+  .nav a {
+    margin-right: 0;
+  }
+
+  .nav .current {
+    font-weight: normal;
+  }
+
+  .footer {
+    padding: 0.5em;
+  }
+
+  .bd a {
+    margin-right: 20px;
+  }
+
+  .bd a:after {
+    right: -10px;
+  }
+}

@@ -29,7 +29,7 @@ function App() {
 
   return (
     <>
-      <div style={{ marginBottom: "10px" }}>
+      <div className="language-switcher">
         {languages.map((language, idx) => (
           <Fragment key={"lang" + language.code}>
             {currLang === language.code ? (

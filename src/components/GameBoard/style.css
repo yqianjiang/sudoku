@@ -3,18 +3,47 @@
   --button-gap: 6px;
 }
 
+.game-wrap {
+  display: flex;
+  gap: 20px;
+}
+
+.game-main {
+  width: calc(9 * var(--cell-size));
+  max-width: 450px;
+}
+
+.game-stat {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.game-timer {
+  display: inline-block;
+  color: #000;
+  font-size: 1.2rem;
+  width: 64px;
+  box-sizing: border-box;
+  text-align: left;
+}
+
 .number-buttons {
   display: flex;
   flex-wrap: nowrap;
   padding: 0;
-  width: 100%;
+  width: fit-content;
+  max-width: 100%;
   margin: 10px 0;
+  border: 1px solid #000;
+  border-radius: 8px;
 }
 
 .number-button {
-  background-color: #fff;
-  border: 1px solid #000;
-  color: #0038ff;
+  background: transparent;
+  border: none;
+  color: #336699;
   cursor: pointer;
   font-size: calc(0.6 * var(--cell-size));
   width: var(--cell-size);
@@ -30,12 +59,14 @@
   color: #666;
   border-color: #999;
   font-size: calc(0.4 * var(--cell-size));
+  height: calc(0.8 * var(--cell-size));
+  line-height: calc(0.8 * var(--cell-size));
 }
 
 /* 避免border重叠 */
-.number-button:not(:last-child) {
+/* .number-button:not(:last-child) {
   border-right: none;
-}
+} */
 
 .action-buttons {
   display: flex;
@@ -47,8 +78,9 @@
   gap: var(--button-gap) 0;
 }
 
-button {
+.button {
   margin-right: var(--button-gap);
+  margin-bottom: var(--button-gap);
   background-color: #fff;
   border: 1px solid #000;
   color: #000;
@@ -56,6 +88,8 @@ button {
   font-size: 1.2rem;
   height: 36px;
   box-sizing: border-box;
+  padding: 0 var(--button-gap);
+  border-radius: 8px;
 }
 
 select {
@@ -69,19 +103,18 @@ select {
   font-size: 1.2rem;
   height: 36px;
   box-sizing: border-box;
-}
-
-.game-timer {
-  margin-right: var(--button-gap);
-  color: #000;
-  font-size: 1.2rem;
-  height: 36px;
-  line-height: 36px;
-  box-sizing: border-box;
-  text-align: center;
   padding: 0 var(--button-gap);
+  border-radius: 8px;
 }
 
 #game-board {
   box-sizing: border-box;
+}
+
+/* 移动端样式 */
+@media (max-width: 768px) {
+  .game-wrap {
+    flex-direction: column;
+    gap: 10px;
+  }
 }

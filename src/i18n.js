@@ -8,12 +8,12 @@ const resources = {
   en: {
     translation: {
       "Sudoku": "Sudoku",
-      "Level:": "Level:",
       "Highlight Numbers": "Highlight Numbers",
       "Highlight Cells": "Highlight Cells",
       "Show Errors": "Show Errors",
       "Auto Remove Notes": "Auto Remove Notes",
-      "Level": "Level:",
+      "Settings": "Settings",
+      "Level": "Level: ",
       "Very Easy": "Beginner",
       "Easy": "Easy",
       "Normal": "Normal",
@@ -33,12 +33,12 @@ const resources = {
   zh: {
     translation: {
       "Sudoku": "数独",
-      "Level:": "难度:",
       "Highlight Numbers": "高亮数字",
       "Highlight Cells": "高亮单元格",
       "Show Errors": "显示错误",
       "Auto Remove Notes": "自动删除笔记",
-      "Level": "难度:",
+      "Settings": "设置",
+      "Level": "难度：",
       "Very Easy": "入门",
       "Easy": "简单",
       "Normal": "普通",
@@ -58,12 +58,12 @@ const resources = {
   ja: {
     translation: {
       "Sudoku": "数独",
-      "Level:": "レベル:",
       "Highlight Numbers": "ハイライト数字",
       "Highlight Cells": "ハイライトセル",
       "Show Errors": "エラーを表示",
       "Auto Remove Notes": "自動的にメモを削除",
-      "Level": "レベル:",
+      "Settings": "設定",
+      "Level": "レベル: ",
       "Very Easy": "初心者",
       "Easy": "簡単",
       "Normal": "普通",

@@ -5,6 +5,7 @@ import Sudoku from "../../utils/Sudoku.js";
 import config from "../../utils/Config.js";
 import GameConfig from "../GameConfig";
 import init from "wasm-sudoku";
+import { HiPlay, HiPause } from "react-icons/hi2";
 
 import { useTranslation } from "react-i18next";
 
@@ -14,7 +15,9 @@ let prevBoardSize = null;
 function formatTime(time) {
   const minutes = Math.floor(time / 60);
   const seconds = time % 60;
-  return `${minutes}:${seconds < 10 ? "0" + seconds : seconds}`;
+  return `${minutes < 10 ? "0" + minutes : minutes}:${
+    seconds < 10 ? "0" + seconds : seconds
+  }`;
 }
 const GameBoard = () => {
   const { t } = useTranslation();
@@ -131,103 +134,122 @@ const GameBoard = () => {
   };
 
   return (
-    <div>
-      <canvas ref={canvasRef} id="game-board" />
-      <div className="number-buttons">
-        {Array.from({ length: boardSize }, (_, i) => i + 1).map((num) => (
-          <button
-            className="number-button"
-            key={num}
-            onClick={() => {
-              if (isPaused) {
-                return;
-              }
-              eventManagerRef.current.fillNumber(num);
-              stageRef.current.render(eventManagerRef.current.selectedSquare);
-            }}
-          >
-            {num}
-          </button>
-        ))}
-      </div>
-      <div className="number-buttons">
-        {Array.from({ length: boardSize }, (_, i) => i + 1).map((num) => (
-          <button
-            className="number-button notes-button"
-            key={num}
-            onClick={() => {
-              if (isPaused) {
-                return;
-              }
-              eventManagerRef.current.fillNote(num);
-              stageRef.current.render(eventManagerRef.current.selectedSquare);
-            }}
-          >
-            {num}
-          </button>
-        ))}
-      </div>
-      <div className="action-buttons">
-        <span className="game-timer">{formatTime(elapsedTime)}</span>
-        {gameStarted && (
-          <>
-            <button className="action-button" onClick={handlePauseResume}>
-              {isPaused ? t("Resume") : t("Pause")}
-            </button>
-
+    <div className="game-wrap">
+      <div className="game-main">
+        <div className="game-stat">
+          <div>
+            <span className="game-timer">{formatTime(elapsedTime)}</span>
+            {gameStarted && (
+              <button onClick={handlePauseResume}>
+                {isPaused ? <HiPlay /> : <HiPause />}
+              </button>
+            )}
+          </div>
+          <div>
+            <span>{t("Error")}: </span>
+            <span>{gameBoardRef.current?.errorCount || 0}</span>
+          </div>
+        </div>
+        <canvas ref={canvasRef} id="game-board" />
+        <div className="number-buttons">
+          {Array.from({ length: boardSize }, (_, i) => i + 1).map((num) => (
             <button
-              className="action-button"
+              className="number-button"
+              key={num}
               onClick={() => {
                 if (isPaused) {
                   return;
                 }
-                eventManagerRef.current.fillNumber(0);
+                eventManagerRef.current.fillNumber(num);
                 stageRef.current.render(eventManagerRef.current.selectedSquare);
               }}
             >
-              {t("Erase")}
+              {num}
             </button>
-
-            {/* 提示 */}
+          ))}
+        </div>
+        <div className="number-buttons">
+          {Array.from({ length: boardSize }, (_, i) => i + 1).map((num) => (
             <button
-              className="action-button"
+              className="number-button notes-button"
+              key={num}
               onClick={() => {
                 if (isPaused) {
                   return;
                 }
-                const selected = eventManagerRef.current.selectedSquare;
-                const hintNum = gameBoardRef.current.hint(
-                  selected.row,
-                  selected.col
-                );
-                eventManagerRef.current.fillNumber(hintNum);
-                stageRef.current.render(selected);
+                eventManagerRef.current.fillNote(num);
+                stageRef.current.render(eventManagerRef.current.selectedSquare);
               }}
             >
-              {t("Hint")}
+              {num}
             </button>
+          ))}
+        </div>
+        <div className="action-buttons">
+          {gameStarted && (
+            <>
+              <button
+                className="action-button button"
+                onClick={() => {
+                  if (isPaused) {
+                    return;
+                  }
+                  eventManagerRef.current.fillNumber(0);
+                  stageRef.current.render(
+                    eventManagerRef.current.selectedSquare
+                  );
+                }}
+              >
+                {t("Erase")}
+              </button>
 
-            {/* 解答 */}
-            <button
-              className="action-button"
-              onClick={() => {
-                if (isPaused) {
-                  return;
-                }
-                gameBoardRef.current.solve();
-                stageRef.current.render();
-              }}
-            >
-              {t("Solve")}
-            </button>
-          </>
-        )}
+              {/* 提示 */}
+              <button
+                className="action-button button"
+                onClick={() => {
+                  if (isPaused) {
+                    return;
+                  }
+                  const selected = eventManagerRef.current.selectedSquare;
+                  const hintNum = gameBoardRef.current.hint(
+                    selected.row,
+                    selected.col
+                  );
+                  eventManagerRef.current.fillNumber(hintNum);
+                  stageRef.current.render(selected);
+                }}
+              >
+                {t("Hint")}
+              </button>
+
+              {/* 解答 */}
+              <button
+                className="action-button button"
+                onClick={() => {
+                  if (isPaused) {
+                    return;
+                  }
+                  gameBoardRef.current.solve();
+                  stageRef.current.render();
+                }}
+              >
+                {t("Solve")}
+              </button>
+            </>
+          )}
+        </div>
       </div>
       <div>
-        <button onClick={handleRestart}>{t("Restart this Game")}</button>
-        <button onClick={handleNewGame}>{t("New Game")}</button>
+        <div>
+          <button className="button" onClick={handleRestart}>
+            {t("Restart this Game")}
+          </button>
+          <button className="button" onClick={handleNewGame}>
+            {t("New Game")}
+          </button>
+        </div>
+        <GameConfig onUpdate={handleUpdateConfig} />
       </div>
-      <GameConfig onUpdate={handleUpdateConfig} />
     </div>
   );
 };

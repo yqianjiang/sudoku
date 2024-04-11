@@ -20,6 +20,9 @@ dependencies:
   react-i18next:
     specifier: ^13.5.0
     version: 13.5.0(i18next@23.7.8)(react-dom@18.2.0)(react@18.2.0)
+  react-icons:
+    specifier: ^5.0.1
+    version: 5.0.1(react@18.2.0)
 
 devDependencies:
   '@types/react':
@@ -1655,6 +1658,14 @@ packages:
       i18next: 23.7.8
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
+    dev: false
+
+  /react-icons@5.0.1(react@18.2.0):
+    resolution: {integrity: sha512-WqLZJ4bLzlhmsvme6iFdgO8gfZP17rfjYEJ2m9RsZjZ+cc4k1hTzknEz63YS1MeT50kVzoa1Nz36f4BEx+Wigw==}
+    peerDependencies:
+      react: '*'
+    dependencies:
+      react: 18.2.0
     dev: false
 
   /react-is@16.13.1:

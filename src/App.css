@@ -1,0 +1,29 @@
+/* h1 {
+  margin: 0;
+} */
+
+.language-switcher {
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 10px;
+}
+
+/* reboot */
+button {
+  font-family: inherit;
+  font-size: 100%;
+  line-height: 1.15;
+  margin: 0;
+  border: none;
+  padding: 0;
+  background: none;
+  cursor: pointer;
+}
+
+/* 移动端样式 */
+@media (max-width: 375px) {
+  .language-switcher {
+    display: none;
+  }
+}

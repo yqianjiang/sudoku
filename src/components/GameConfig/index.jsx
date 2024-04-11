@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import config, { LEVEL } from "../../utils/Config.js";
 import { useTranslation } from "react-i18next";
+import "./style.css";
 
 // import PropTypes from "prop-types";
 
@@ -74,17 +75,17 @@ const GameConfig = ({ onUpdate }) => {
   }
 
   return (
-    <div>
+    <div className="settings">
+      <div className="settings-title">{t("Settings")}</div>
       <div>
         <label>
-          {t("Level:")}
+          {t("Level")}
           <select value={level} onChange={handleChangeLevel}>
             <option value={LEVEL.VERY_EASY}>{t("Very Easy")}</option>
             <option value={LEVEL.EASY}>{t("Easy")}</option>
             <option value={LEVEL.NORMAL}>{t("Normal")}</option>
             <option value={LEVEL.HARD}>{t("Hard")}</option>
             <option value={LEVEL.VERY_HARD}>{t("Very Hard")}</option>
-            {/* <option value="0">{t('Empty')}</option> */}
           </select>
         </label>
       </div>

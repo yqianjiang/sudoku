@@ -61,10 +61,24 @@ class Sudoku {
     this.wrongCells = [];
     this.initNotes();
     this.winCallback = winCallback;
+    this.errorCount = 0;
   }
 
-  initGame() {
+  initNotes() {
+    this.notes = new Array(this.boardSize * this.boardSize).fill(null).map(() => new Array(this.boardSize).fill(false));
+  }
+
+  reset_game() {
+    this.board = [...this.originState]
+    this.initNotes();
     this.wrongCells = [];
+    this.errorCount = 0;
+    this.gameState = GameState.RUNNING;
+  }
+
+  start_new_game() {
+    this.wrongCells = [];
+    this.errorCount = 0;
 
     // const start = performance.now();
 
@@ -75,22 +89,6 @@ class Sudoku {
     // console.log("生成用时", (performance.now() - start).toFixed(2) + "ms");
 
     this.initNotes();
-  }
-
-  initNotes() {
-    this.notes = new Array(this.boardSize * this.boardSize).fill(null).map(() => new Array(this.boardSize).fill(false));
-  }
-
-  reset_game() {
-    // this.restartTimer();
-    this.board = [...this.originState]
-    this.initNotes();
-    this.wrongCells = [];
-    this.gameState = GameState.RUNNING;
-  }
-
-  start_new_game() {
-    this.initGame();
     this.gameState = GameState.RUNNING;
   }
 
@@ -208,6 +206,7 @@ class Sudoku {
     // 检查是否填错
     if (number !== 0 && !this.checkNumber(row, col, number)) {
       this.wrongCells.push([row, col]);
+      this.errorCount++;
     } else {
       this.wrongCells = this.wrongCells.filter((cell) => cell[0] !== row || cell[1] !== col);
     }
