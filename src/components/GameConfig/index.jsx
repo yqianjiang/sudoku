@@ -90,7 +90,7 @@ const GameConfig = ({ onUpdate }) => {
       </div>
       <div>
         <label>
-          {t("Highlight Numbers:")}
+          {t("Highlight Numbers")}
           <input
             type="checkbox"
             checked={highlightNumbers}
@@ -100,7 +100,7 @@ const GameConfig = ({ onUpdate }) => {
       </div>
       <div>
         <label>
-          {t("Highlight Cells:")}
+          {t("Highlight Cells")}
           <input
             type="checkbox"
             checked={highlightCells}
@@ -110,7 +110,7 @@ const GameConfig = ({ onUpdate }) => {
       </div>
       <div>
         <label>
-          {t("Show Errors:")}
+          {t("Show Errors")}
           <input
             type="checkbox"
             checked={showErrors}
@@ -126,7 +126,7 @@ const GameConfig = ({ onUpdate }) => {
       </div> */}
       <div>
         <label>
-          {t("Auto Remove Notes:")}
+          {t("Auto Remove Notes")}
           <input
             type="checkbox"
             checked={autoRemoveNotes}
