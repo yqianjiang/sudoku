@@ -45,7 +45,12 @@ const GameBoard = () => {
       loadConfig();
       const gameBoard =
         gameBoardRef.current ||
-        new Sudoku(config.boardSize, config.level, handleWin);
+        new Sudoku({
+          boardSize: config.boardSize,
+          level: config.level,
+          autoRemoveNotes: config.autoRemoveNotes,
+          winCallback: handleWin,
+        });
       gameBoardRef.current = gameBoard;
       const canvas = canvasRef.current;
       const stage = stageRef.current || new Stage(canvas, gameBoard, config);
@@ -117,6 +122,7 @@ const GameBoard = () => {
       stageRef.current.setCanvasSize();
       restart = true;
     }
+    gameBoardRef.current.autoRemoveNotes = config.autoRemoveNotes;
     if (restart) {
       handleNewGame();
     } else {

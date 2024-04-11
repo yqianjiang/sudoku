@@ -11,12 +11,16 @@ const GameConfig = ({ onUpdate }) => {
   const [highlightNumbers, setHighlightNumbers] = useState(true);
   const [highlightCells, setHighlightCells] = useState(true);
   const [showErrors, setShowErrors] = useState(true);
+  // const [autoFillNotes, setAutoFillNotes] = useState(false);
+  const [autoRemoveNotes, setAutoRemoveNotes] = useState(true);
   // const [boardSize, setBoardSize] = useState(9);
 
   function loadConfig() {
     setHighlightCells(config.highlightCells);
     setHighlightNumbers(config.highlightNumbers);
     setShowErrors(config.showErrors);
+    // setAutoFillNotes(config.autoFillNotes);
+    setAutoRemoveNotes(config.autoRemoveNotes);
     // setBoardSize(config.boardSize);
     setLevel(config.level);
   }
@@ -40,6 +44,18 @@ const GameConfig = ({ onUpdate }) => {
   function toggleShowErrors() {
     setShowErrors(!showErrors);
     config.updateConfigs({ showErrors: !showErrors });
+    onUpdate();
+  }
+
+  // function toggleAutoFillNotes() {
+  //   setAutoFillNotes(!autoFillNotes);
+  //   config.updateConfigs({ autoFillNotes: !autoFillNotes });
+  //   onUpdate();
+  // }
+
+  function toggleAutoRemoveNotes() {
+    setAutoRemoveNotes(!autoRemoveNotes);
+    config.updateConfigs({ autoRemoveNotes: !autoRemoveNotes });
     onUpdate();
   }
 
@@ -99,6 +115,22 @@ const GameConfig = ({ onUpdate }) => {
             type="checkbox"
             checked={showErrors}
             onChange={toggleShowErrors}
+          />
+        </label>
+      </div>
+      {/* <div>
+        <label>
+          {t("Auto Fill Notes:")}
+          <input type="checkbox" disabled />
+        </label>
+      </div> */}
+      <div>
+        <label>
+          {t("Auto Remove Notes:")}
+          <input
+            type="checkbox"
+            checked={autoRemoveNotes}
+            onChange={toggleAutoRemoveNotes}
           />
         </label>
       </div>

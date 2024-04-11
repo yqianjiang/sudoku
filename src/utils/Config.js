@@ -13,6 +13,8 @@ class Config {
       highlightNumbers: true,
       highlightCells: true,
       showErrors: true,
+      autoFillNotes: false,
+      autoRemoveNotes: true,
       boardSize: 9,
       level: LEVEL.NORMAL,
     };
@@ -37,6 +39,14 @@ class Config {
 
   get level() {
     return this.configs.level;
+  }
+
+  get autoFillNotes() {
+    return this.configs.autoFillNotes;
+  }
+
+  get autoRemoveNotes() {
+    return this.configs.autoRemoveNotes;
   }
 
   initConfigs() {

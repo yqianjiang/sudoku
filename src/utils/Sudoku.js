@@ -52,9 +52,10 @@ const GameState = {
 };
 
 class Sudoku {
-  constructor(boardSize, level, winCallback) {
+  constructor({ boardSize, level, autoRemoveNotes, winCallback }) {
     this.boardSize = boardSize;
     this.level = level;
+    this.autoRemoveNotes = autoRemoveNotes;
     this.originState = [];
     this.gameState = GameState.OVER;
     this.wrongCells = [];
@@ -158,6 +159,45 @@ class Sudoku {
     this.wrongCells = wrongCells;
   }
 
+  removeInvalidNotes(row, col, number) {
+    // 填入数字后，清除无效的笔记（即已经填入的数字对应的笔记）
+    // 检查填入数字的同一行、同一列、同一九宫格，未填入数字且存在笔记的单元格，如果笔记中包含填入的数字，则清除
+    const squareSize = Math.sqrt(this.boardSize);
+    const startRow = Math.floor(row / squareSize) * squareSize;
+    const startCol = Math.floor(col / squareSize) * squareSize;
+
+    for (let i = 0; i < this.boardSize; i++) {
+      // 检查同一行
+      if (i !== col && this.get_number(row, i) === 0) {
+        const notes = this.get_notes(row, i);
+        if (notes[number - 1]) {
+          this.fill_notes(row, i, number);
+        }
+      }
+
+      // 检查同一列
+      if (i !== row && this.get_number(i, col) === 0) {
+        const notes = this.get_notes(i, col);
+        if (notes[number - 1]) {
+          this.fill_notes(i, col, number);
+        }
+      }
+    }
+
+    // 检查同一九宫格
+    for (let i = startRow; i < startRow + squareSize; i++) {
+      for (let j = startCol; j < startCol + squareSize; j++) {
+        if (i !== row && j !== col && this.get_number(i, j) === 0) {
+          const notes = this.get_notes(i, j);
+          if (notes[number - 1]) {
+            this.fill_notes(i, j, number);
+          }
+        }
+      }
+    }
+  }
+
+
   fill_number(row, col, number) {
     // 检查是否可以填入
     if (this.is_origin_cell(row, col)) {
@@ -187,6 +227,10 @@ class Sudoku {
     }
 
     this.checkWrongCellsRemovable();
+
+    if (number !== 0 && this.autoRemoveNotes) {
+      this.removeInvalidNotes(row, col, number);
+    }
   }
 
   clear_number(row, col) {
