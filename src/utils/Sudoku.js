@@ -2,11 +2,11 @@ import { generate_sudoku, solve_sudoku } from "wasm-sudoku";
 import { LEVEL } from "./Config";
 
 const levelNumsMap = {
-  [LEVEL.VERY_EASY]: 68,
-  [LEVEL.EASY]: 58,
-  [LEVEL.NORMAL]: 35,
-  [LEVEL.HARD]: 29,
-  [LEVEL.VERY_HARD]: 25,
+  [LEVEL.VERY_EASY]: 68,  // 新手觉得简单
+  [LEVEL.EASY]: 46,       // 我觉得简单
+  [LEVEL.NORMAL]: 30,     // 我觉得刚好
+  [LEVEL.HARD]: 27,       // 我觉得困难
+  [LEVEL.VERY_HARD]: 25,  // todo: 23-24？
 }
 
 function generateSudoku(level) {

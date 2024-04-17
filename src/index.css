@@ -1,5 +1,6 @@
 .game-card {
   max-width: 800px;
+  min-height: 800px;
   margin: auto;
   padding: 16px;
   background-color: #fff;
