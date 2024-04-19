@@ -138,52 +138,73 @@ const GameBoard = () => {
       <div className="game-main">
         <div className="game-stat">
           <div>
-            <span className="game-timer">{formatTime(elapsedTime)}</span>
-            {gameStarted && (
-              <button onClick={handlePauseResume}>
-                {isPaused ? <HiPlay /> : <HiPause />}
-              </button>
-            )}
+            <span>{t("Filled")}: </span>
+            <span>
+              {gameBoardRef.current?.get_board().filter((x) => x !== 0).length}{" "}
+              / {gameBoardRef.current?.get_board().length}
+            </span>
           </div>
           <div>
             <span>{t("Error")}: </span>
             <span>{gameBoardRef.current?.errorCount || 0}</span>
           </div>
+          <div className="game-timer-wrap">
+            <span className="game-timer">{formatTime(elapsedTime)}</span>
+            {gameStarted && (
+              <button className="game-timer-btn" onClick={handlePauseResume}>
+                {isPaused ? (
+                  <HiPlay fontSize={24} />
+                ) : (
+                  <HiPause fontSize={24} />
+                )}
+              </button>
+            )}
+          </div>
         </div>
         <canvas ref={canvasRef} id="game-board" />
-        <div className="number-buttons">
-          {Array.from({ length: boardSize }, (_, i) => i + 1).map((num) => (
-            <button
-              className="number-button"
-              key={num}
-              onClick={() => {
-                if (isPaused) {
-                  return;
-                }
-                eventManagerRef.current.fillNumber(num);
-                stageRef.current.render(eventManagerRef.current.selectedSquare);
-              }}
-            >
-              {num}
-            </button>
-          ))}
+        <div className="number-buttons-wrap">
+          <span>{t("Numbers")}</span>
+          <div className="number-buttons">
+            {Array.from({ length: boardSize }, (_, i) => i + 1).map((num) => (
+              <button
+                className="number-button"
+                key={num}
+                onClick={() => {
+                  if (isPaused) {
+                    return;
+                  }
+                  eventManagerRef.current.fillNumber(num);
+                  stageRef.current.render(
+                    eventManagerRef.current.selectedSquare
+                  );
+                }}
+              >
+                {num}
+              </button>
+            ))}
+          </div>
         </div>
-        <div className="number-buttons">
-          {Array.from({ length: boardSize }, (_, i) => i + 1).map((num) => (
-            <button
-              className="number-button notes-button"
-              key={num}
-              onClick={() => {
-                if (isPaused) {
-                  return;
-                }
-                eventManagerRef.current.fillNote(num);
-                stageRef.current.render(eventManagerRef.current.selectedSquare);
-              }}
-            >
-              {num}
-            </button>
-          ))}
+        <div className="number-buttons-wrap">
+          <span>{t("Notes")}</span>
+          <div className="number-buttons">
+            {Array.from({ length: boardSize }, (_, i) => i + 1).map((num) => (
+              <button
+                className="number-button notes-button"
+                key={num}
+                onClick={() => {
+                  if (isPaused) {
+                    return;
+                  }
+                  eventManagerRef.current.fillNote(num);
+                  stageRef.current.render(
+                    eventManagerRef.current.selectedSquare
+                  );
+                }}
+              >
+                {num}
+              </button>
+            ))}
+          </div>
         </div>
         <div className="action-buttons">
           {gameStarted && (

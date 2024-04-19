@@ -18,15 +18,37 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  font-size: 1rem;
+  color: #333;
+}
+
+.game-timer-wrap {
+  display: flex;
+  align-items: center;
 }
 
 .game-timer {
   display: inline-block;
-  color: #000;
-  font-size: 1.2rem;
-  width: 64px;
+  width: 48px;
   box-sizing: border-box;
   text-align: left;
+}
+
+.game-timer-btn {
+  line-height: 1.2rem;
+  margin-left: 4px;
+  color: inherit;
+  font-size: inherit;
+  display: flex;
+  align-items: center;
+}
+
+.number-buttons-wrap {
+  margin-bottom: 12px;
+}
+
+.number-buttons-wrap span {
+  font-size: 14px;
 }
 
 .number-buttons {
@@ -35,15 +57,14 @@
   padding: 0;
   width: fit-content;
   max-width: 100%;
-  margin: 10px 0;
-  border: 1px solid #000;
-  border-radius: 8px;
+  border: 1px solid #666;
+  border-radius: 16px;
 }
 
 .number-button {
   background: transparent;
   border: none;
-  color: #336699;
+  color: #0479dd;
   cursor: pointer;
   font-size: calc(0.6 * var(--cell-size));
   width: var(--cell-size);
@@ -73,7 +94,7 @@
   flex-wrap: wrap;
   padding: 0;
   width: 100%;
-  margin-top: var(--button-gap);
+  margin-top: 20px;
   margin-bottom: var(--button-gap);
   gap: var(--button-gap) 0;
 }

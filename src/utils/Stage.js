@@ -9,12 +9,12 @@ class Stage {
 
     this.theme = {
       background: '#fff',
-      highlightColor: '#C0EAFF',
-      highlightNumberColor: '#85C9FF',
+      highlightColor: '#E3F3FE',
+      highlightNumberColor: '#BBDFFE',
       boardStrokeColor: '#336699',
-      errorColor: '#FF8585',
+      errorColor: '#FBB9DE',
       textColor: '#333',
-      textColorPlayer: '#0038FF',
+      textColorPlayer: '#0479DD',
       boldLineWidth: 3,
       normalLineWidth: 1,
       cellSize: 34,
