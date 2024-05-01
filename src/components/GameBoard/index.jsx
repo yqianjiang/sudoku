@@ -30,6 +30,7 @@ const GameBoard = () => {
 
   const [boardSize, setBoardSize] = useState(9);
   const [isPaused, setIsPaused] = useState(false);
+  const [isWin, setIsWin] = useState(false);
   const [gameStarted, setGameStarted] = useState(false);
   const [elapsedTime, setElapsedTime] = useState(0);
 
@@ -41,6 +42,7 @@ const GameBoard = () => {
   const handleWin = () => {
     setIsPaused(true);
     setGameStarted(false);
+    setIsWin(true);
   };
 
   useEffect(() => {
@@ -87,7 +89,7 @@ const GameBoard = () => {
   const handlePauseResume = () => {
     if (!isPaused) {
       gameBoardRef.current.pause_game();
-      stageRef.current.renderPause(t("Paused"));
+      stageRef.current.renderPause();
       setIsPaused(true);
     } else {
       gameBoardRef.current.resume_game();
@@ -100,6 +102,7 @@ const GameBoard = () => {
     setIsPaused(false);
     setElapsedTime(0);
     setGameStarted(true);
+    setIsWin(false);
     gameBoardRef.current.reset_game();
     stageRef.current.render();
   };
@@ -108,6 +111,7 @@ const GameBoard = () => {
     setIsPaused(false);
     setElapsedTime(0);
     setGameStarted(true);
+    setIsWin(false);
     gameBoardRef.current.start_new_game();
     stageRef.current.render();
   };
@@ -161,7 +165,30 @@ const GameBoard = () => {
             )}
           </div>
         </div>
-        <canvas ref={canvasRef} id="game-board" />
+        <div className="game-board-wrap">
+          <canvas ref={canvasRef} id="game-board" />
+          {isPaused && (
+            <div className="game-board-react-wrapper">
+              {isWin ? (
+                // 展示胜利弹窗
+                <div className="win-modal">
+                  <h2 className="win-modal-title">{t("Congratulations")}</h2>
+                  <p>{t("You have solved the puzzle!")}</p>
+                  <button className="button" onClick={handleNewGame}>
+                    {t("New Game")}
+                  </button>
+                </div>
+              ) : (
+                <button
+                  className="game-board-paused-btn"
+                  onClick={handlePauseResume}
+                >
+                  <HiPlay fontSize={40} />
+                </button>
+              )}
+            </div>
+          )}
+        </div>
         <div className="number-buttons-wrap">
           <span>{t("Numbers")}</span>
           <div className="number-buttons">

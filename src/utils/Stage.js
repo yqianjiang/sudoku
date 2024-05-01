@@ -87,12 +87,10 @@ class Stage {
 
   renderWin() {
     this.renderMask(0.5, true);
-    this.renderText('You Win!', this.canvas.width / 2 / this.scaleFactor, this.canvas.height / 2 / this.scaleFactor);
   }
 
-  renderPause(text) {
+  renderPause() {
     this.renderMask(0.5);
-    this.renderText(text || 'Paused', this.canvas.width / 2 / this.scaleFactor, this.canvas.height / 2 / this.scaleFactor);
   }
 
   // 画数独游戏的背景游戏板，九宫格范围内线条加粗

@@ -29,8 +29,11 @@ const resources = {
       Solve: "Solve",
       Hint: "Hint",
       Filled: "Filled",
+      Error: "Error",
       Numbers: "Numbers",
       Notes: "Notes",
+      "Congratulations": "Congratulations!",
+      "You have solved the puzzle!": "You have solved the puzzle!",
     }
   },
   zh: {
@@ -57,8 +60,11 @@ const resources = {
       Solve: "解答",
       Hint: "提示",
       Filled: "已填",
+      Error: "错误",
       Numbers: "数字",
       Notes: "笔记",
+      "Congratulations": "恭喜！",
+      "You have solved the puzzle!": "你已解决了这个谜题！",
     }
   },
   ja: {
@@ -85,8 +91,11 @@ const resources = {
       Solve: "解く",
       Hint: "ヒント",
       Filled: "埋められた",
+      Error: "エラー",
       Numbers: "数字",
       Notes: "メモ",
+      "Congratulations": "おめでとうございます！",
+      "You have solved the puzzle!": "パズルを解決しました！",
     }
   },
 };
