@@ -10,6 +10,7 @@ import { useGameStat } from "./hooks/useGameStat.js";
 import { formatTime } from "../../utils";
 
 import { HiPlay, HiPause } from "react-icons/hi2";
+import toast, { Toaster } from "react-hot-toast";
 
 import { useTranslation } from "react-i18next";
 
@@ -223,9 +224,9 @@ const GameBoard = () => {
               {gameStarted && (
                 <button className="game-timer-btn" onClick={handlePauseResume}>
                   {isPaused ? (
-                    <HiPlay fontSize={24} />
+                    <HiPlay fontSize={16} />
                   ) : (
-                    <HiPause fontSize={24} />
+                    <HiPause fontSize={16} />
                   )}
                 </button>
               )}
@@ -350,7 +351,7 @@ const GameBoard = () => {
                     if (gameBoardRef.current.solve()) {
                       stageRef.current.render();
                     } else {
-                      console.log("无解"); // TODO: 弹 toast 告知用户：“哎呀，看起来前面有数字填错了，导致我们现在没法解出答案了～请检查一下前面的填写，再试一次哦！”
+                      toast(t("no solution"));
                     }
                   }}
                 >
@@ -373,6 +374,7 @@ const GameBoard = () => {
           <GameStat stat={stat} />
         </div>
       </div>
+      <Toaster />
     </>
   );
 };

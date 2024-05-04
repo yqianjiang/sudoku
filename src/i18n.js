@@ -26,7 +26,7 @@ const resources = {
       "Pause": "Pause",
       "Paused": "Paused",
       Erase: "Erase",
-      Solve: "Solve",
+      Solve: "Complete For Me",
       Hint: "Hint",
       Filled: "Filled",
       Error: "Error",
@@ -39,6 +39,7 @@ const resources = {
       "Solved Puzzles": "Solved Puzzles",
       "Perfect Solutions": "Perfect Solutions",
       "No challenge record yet.": "No challenge record yet.",
+      "no solution": "Oops, it looks like there was a mistake with the numbers filled in earlier, so we can't solve the puzzle now. Please check the previous entries and give it another try!",
     }
   },
   zh: {
@@ -62,7 +63,7 @@ const resources = {
       "Pause": "暂停",
       "Paused": "暂停中",
       Erase: "擦除",
-      Solve: "解答",
+      Solve: "帮我填完",
       Hint: "提示",
       Filled: "已填",
       Error: "错误",
@@ -74,7 +75,8 @@ const resources = {
       "Shortest Time": "最短时间",
       "Solved Puzzles": "已解题数",
       "Perfect Solutions": "完美解题",
-      "No challenge record yet.": "尚无挑战记录。"
+      "No challenge record yet.": "尚无挑战记录。",
+      "no solution": "哎呀，看起来前面有数字填错了，导致我们现在没法解出答案了～请检查一下前面的填写，再试一次哦！",
     }
   },
   ja: {
@@ -98,7 +100,7 @@ const resources = {
       "Pause": "一時停止",
       "Paused": "一時停止中",
       Erase: "消す",
-      Solve: "解く",
+      Solve: "完成して",
       Hint: "ヒント",
       Filled: "埋められた",
       Error: "エラー",
@@ -111,6 +113,7 @@ const resources = {
       "Solved Puzzles": "解いたパズル",
       "Perfect Solutions": "完璧な解決策",
       "No challenge record yet.": "まだ挑戦記録はありません。",
+      "no solution": "あれ？どうやら先の数字に間違いがあるみたいで、今はパズルを解くことができません。これまでの入力をもう一度チェックして、改めて挑戦してくださいね。",
     }
   },
 };
