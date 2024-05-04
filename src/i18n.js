@@ -33,7 +33,12 @@ const resources = {
       Numbers: "Numbers",
       Notes: "Notes",
       "Congratulations": "Congratulations!",
-      "You have solved the puzzle!": "You have solved the puzzle!",
+      "You have solved the puzzle!": "You have solved the puzzle! Time taken: {{time}}",
+      "Game Statistics": "Game Statistics",
+      "Shortest Time": "Shortest Time",
+      "Solved Puzzles": "Solved Puzzles",
+      "Perfect Solutions": "Perfect Solutions",
+      "No challenge record yet.": "No challenge record yet.",
     }
   },
   zh: {
@@ -61,10 +66,15 @@ const resources = {
       Hint: "提示",
       Filled: "已填",
       Error: "错误",
-      Numbers: "数字",
+      Numbers: "填数",
       Notes: "笔记",
       "Congratulations": "恭喜！",
-      "You have solved the puzzle!": "你已解决了这个谜题！",
+      "You have solved the puzzle!": "你已解决了这个谜题！用时：{{time}}",
+      "Game Statistics": "游戏统计信息",
+      "Shortest Time": "最短时间",
+      "Solved Puzzles": "已解题数",
+      "Perfect Solutions": "完美解题",
+      "No challenge record yet.": "尚无挑战记录。"
     }
   },
   ja: {
@@ -95,7 +105,12 @@ const resources = {
       Numbers: "数字",
       Notes: "メモ",
       "Congratulations": "おめでとうございます！",
-      "You have solved the puzzle!": "パズルを解決しました！",
+      "You have solved the puzzle!": "パズルを解きました！所要時間：{{time}}",
+      "Game Statistics": "ゲームの統計",
+      "Shortest Time": "最短時間",
+      "Solved Puzzles": "解いたパズル",
+      "Perfect Solutions": "完璧な解決策",
+      "No challenge record yet.": "まだ挑戦記録はありません。",
     }
   },
 };

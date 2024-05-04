@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import config, { LEVEL } from "../../utils/Config.js";
+import config from "../../utils/Config.js";
 import { useTranslation } from "react-i18next";
 import "./style.css";
 
@@ -8,7 +8,6 @@ import "./style.css";
 const GameConfig = ({ onUpdate }) => {
   const { t } = useTranslation();
 
-  const [level, setLevel] = useState(LEVEL.NORMAL);
   const [highlightNumbers, setHighlightNumbers] = useState(true);
   const [highlightCells, setHighlightCells] = useState(true);
   const [showErrors, setShowErrors] = useState(true);
@@ -22,8 +21,6 @@ const GameConfig = ({ onUpdate }) => {
     setShowErrors(config.showErrors);
     // setAutoFillNotes(config.autoFillNotes);
     setAutoRemoveNotes(config.autoRemoveNotes);
-    // setBoardSize(config.boardSize);
-    setLevel(config.level);
   }
 
   useEffect(() => {
@@ -67,30 +64,11 @@ const GameConfig = ({ onUpdate }) => {
   //   onUpdate();
   // }
 
-  function handleChangeLevel(e) {
-    const newLevel = e.target.value;
-    setLevel(newLevel);
-    config.updateConfigs({ level: newLevel });
-    onUpdate();
-  }
-
   return (
     <div className="settings">
       <div className="settings-title">{t("Settings")}</div>
-      <div>
-        <label>
-          {t("Level")}
-          <select value={level} onChange={handleChangeLevel}>
-            <option value={LEVEL.VERY_EASY}>{t("Very Easy")}</option>
-            <option value={LEVEL.EASY}>{t("Easy")}</option>
-            <option value={LEVEL.NORMAL}>{t("Normal")}</option>
-            <option value={LEVEL.HARD}>{t("Hard")}</option>
-            <option value={LEVEL.VERY_HARD}>{t("Very Hard")}</option>
-          </select>
-        </label>
-      </div>
-      <div>
-        <label>
+      <div className="settings-option">
+        <label className="settings-option-label">
           {t("Highlight Numbers")}
           <input
             type="checkbox"
@@ -99,8 +77,8 @@ const GameConfig = ({ onUpdate }) => {
           />
         </label>
       </div>
-      <div>
-        <label>
+      <div className="settings-option">
+        <label className="settings-option-label">
           {t("Highlight Cells")}
           <input
             type="checkbox"
@@ -109,8 +87,8 @@ const GameConfig = ({ onUpdate }) => {
           />
         </label>
       </div>
-      <div>
-        <label>
+      <div className="settings-option">
+        <label className="settings-option-label">
           {t("Show Errors")}
           <input
             type="checkbox"
@@ -119,14 +97,14 @@ const GameConfig = ({ onUpdate }) => {
           />
         </label>
       </div>
-      {/* <div>
-        <label>
+      {/* <div className="settings-option">
+        <label className="settings-option-label">
           {t("Auto Fill Notes:")}
           <input type="checkbox" disabled />
         </label>
       </div> */}
-      <div>
-        <label>
+      <div className="settings-option">
+        <label className="settings-option-label">
           {t("Auto Remove Notes")}
           <input
             type="checkbox"
@@ -135,8 +113,8 @@ const GameConfig = ({ onUpdate }) => {
           />
         </label>
       </div>
-      {/* <div>
-        <label>
+      {/* <div className="settings-option">
+        <label className="settings-option-label">
           Board Size:
           <select value={boardSize} onChange={handleChangeBoardSize}>
             <option value={4}>4x4</option>

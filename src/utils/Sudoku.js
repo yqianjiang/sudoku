@@ -43,9 +43,22 @@ function generateSudoku(level) {
   return puzzle;
 }
 
+// 当游戏状态改变时，保存状态
+function saveGameState(gameState) {
+  localStorage.setItem('sudoku_gameState', JSON.stringify(gameState));
+}
+
+// 在页面加载时恢复状态
+function loadGameState() {
+  const savedGameState = localStorage.getItem('sudoku_gameState');
+  if (savedGameState) {
+    const gameState = JSON.parse(savedGameState);
+    return gameState;
+  }
+}
 
 const GameState = {
-  OVER: "over",
+  WAITING: "waiting",
   RUNNING: "running",
   PAUSED: "paused",
   WIN: "win",
@@ -57,11 +70,38 @@ class Sudoku {
     this.level = level;
     this.autoRemoveNotes = autoRemoveNotes;
     this.originState = [];
-    this.gameState = GameState.OVER;
+    this.gameState = GameState.WAITING;
     this.wrongCells = [];
     this.initNotes();
     this.winCallback = winCallback;
     this.errorCount = 0;
+    this.hintCount = 0;
+    this.spentTime = 0;
+    this.winByAutoSolve = false;
+    this.loadGameState();
+  }
+
+  saveGameState() {
+    saveGameState(this);
+  }
+
+  loadGameState() {
+    const gameState = loadGameState();
+    if (gameState) {
+      this.boardSize = gameState.boardSize;
+      this.level = gameState.level;
+      this.autoRemoveNotes = gameState.autoRemoveNotes;
+      this.originState = Array.from(gameState.originState);
+      this.board = Array.from(gameState.board);
+      this.gameState = gameState.gameState;
+      this.wrongCells = gameState.wrongCells;
+      this.notes = gameState.notes;
+      this.errorCount = gameState.errorCount;
+      this.hintCount = gameState.hintCount;
+      this.spentTime = gameState.spentTime;
+      return true;
+    }
+    return false;
   }
 
   initNotes() {
@@ -73,45 +113,58 @@ class Sudoku {
     this.initNotes();
     this.wrongCells = [];
     this.errorCount = 0;
+    this.hintCount = 0;
+    this.spentTime = 0;
+    this.winByAutoSolve = false;
     this.gameState = GameState.RUNNING;
+    this.saveGameState();
   }
 
   start_new_game() {
     this.wrongCells = [];
     this.errorCount = 0;
+    this.hintCount = 0;
+    this.spentTime = 0;
+    this.winByAutoSolve = false;
 
     // const start = performance.now();
 
     // 随机开局
-    this.board = generateSudoku(this.level);
+    this.board = [...generateSudoku(this.level)];
     this.originState = [...this.board];
 
     // console.log("生成用时", (performance.now() - start).toFixed(2) + "ms");
 
     this.initNotes();
     this.gameState = GameState.RUNNING;
+    this.saveGameState();
   }
 
   pause_game() {
     this.gameState = GameState.PAUSED;
+    this.saveGameState();
   }
 
   resume_game() {
     this.gameState = GameState.RUNNING;
+    this.saveGameState();
   }
 
 
   solve() {
+    this.hintCount++;
     const res = solve_sudoku(this.board);
-    if (res) {
+    if (res?.length) {
       this.board = [...res];
+      this.winByAutoSolve = true;
       this.finishGame();
-    } else {
-      console.log("无解");
+      return true;
     }
+    return false;
   }
 
   hint(x, y) {
+    this.hintCount++;
     const res = solve_sudoku(this.board);
     if (res) {
       return res[x * this.boardSize + y];
@@ -131,6 +184,7 @@ class Sudoku {
 
     this.gameState = GameState.WIN;
     this.winCallback();
+    this.saveGameState();
   }
 
   is_origin_cell(row, col) {
@@ -144,6 +198,7 @@ class Sudoku {
 
     const currentNotes = this.get_notes(row, col);
     this.set_notes(row, col, currentNotes.map((note, index) => index === number - 1 ? !note : note));
+    this.saveGameState();
   }
 
   checkWrongCellsRemovable() {
@@ -230,6 +285,7 @@ class Sudoku {
     if (number !== 0 && this.autoRemoveNotes) {
       this.removeInvalidNotes(row, col, number);
     }
+    this.saveGameState();
   }
 
   clear_number(row, col) {
@@ -241,11 +297,16 @@ class Sudoku {
   }
 
   get_number(row, col) {
-    return this.board[row * this.boardSize + col];
+    return this.board?.[row * this.boardSize + col] || 0;
   }
 
   get_board() {
     return this.board;
+  }
+
+  set_spentTime(time) {
+    this.spentTime = time;
+    this.saveGameState();
   }
 
   set_notes(row, col, notes) {
@@ -254,6 +315,7 @@ class Sudoku {
 
   set_level(level) {
     this.level = level;
+    this.saveGameState();
   }
 
   get_notes(row, col) {
@@ -266,6 +328,10 @@ class Sudoku {
 
   get_wrong_cells() {
     return this.wrongCells;
+  }
+
+  is_waiting() {
+    return this.gameState === GameState.WAITING;
   }
 
   is_running() {

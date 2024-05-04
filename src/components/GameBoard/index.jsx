@@ -2,9 +2,13 @@ import { useState, useEffect, useRef } from "react";
 import Stage from "../../utils/Stage.js";
 import EventManager from "../../utils/EventManager.js";
 import Sudoku from "../../utils/Sudoku.js";
-import config from "../../utils/Config.js";
+import config, { LEVEL, levelMap } from "../../utils/Config.js";
 import GameConfig from "../GameConfig";
+import GameStat from "../GameStat/index.jsx";
 import init from "wasm-sudoku";
+import { useGameStat } from "./hooks/useGameStat.js";
+import { formatTime } from "../../utils";
+
 import { HiPlay, HiPause } from "react-icons/hi2";
 
 import { useTranslation } from "react-i18next";
@@ -12,13 +16,7 @@ import { useTranslation } from "react-i18next";
 import "./style.css";
 
 let prevBoardSize = null;
-function formatTime(time) {
-  const minutes = Math.floor(time / 60);
-  const seconds = time % 60;
-  return `${minutes < 10 ? "0" + minutes : minutes}:${
-    seconds < 10 ? "0" + seconds : seconds
-  }`;
-}
+
 const GameBoard = () => {
   const { t } = useTranslation();
 
@@ -29,13 +27,16 @@ const GameBoard = () => {
   const timerRef = useRef(null);
 
   const [boardSize, setBoardSize] = useState(9);
+  const [level, setLevel] = useState(LEVEL.NORMAL);
   const [isPaused, setIsPaused] = useState(false);
   const [isWin, setIsWin] = useState(false);
   const [gameStarted, setGameStarted] = useState(false);
   const [elapsedTime, setElapsedTime] = useState(0);
+  const { stat, updateStat } = useGameStat();
 
   function loadConfig() {
     setBoardSize(config.boardSize);
+    setLevel(config.level);
     prevBoardSize = config.boardSize;
   }
 
@@ -43,27 +44,46 @@ const GameBoard = () => {
     setIsPaused(true);
     setGameStarted(false);
     setIsWin(true);
+    if (!gameBoardRef.current.winByAutoSolve) {
+      updateStat({
+        difficulty: config.level,
+        newTime: gameBoardRef.current.spentTime,
+        errorCount: gameBoardRef.current.errorCount,
+        hintCount: gameBoardRef.current.hintCount,
+      });
+    }
   };
 
   useEffect(() => {
     init().then(() => {
       loadConfig();
-      const gameBoard =
-        gameBoardRef.current ||
-        new Sudoku({
+
+      // 初始化 Sudoku 类
+      if (!gameBoardRef.current) {
+        const gameBoard = new Sudoku({
           boardSize: config.boardSize,
           level: config.level,
           autoRemoveNotes: config.autoRemoveNotes,
           winCallback: handleWin,
         });
-      gameBoardRef.current = gameBoard;
-      const canvas = canvasRef.current;
-      const stage = stageRef.current || new Stage(canvas, gameBoard, config);
-      stageRef.current = stage;
-      handleNewGame();
-      const eventManager =
-        eventManagerRef.current || new EventManager(stage, gameBoard, config);
-      eventManagerRef.current = eventManager;
+        gameBoardRef.current = gameBoard;
+
+        // 初始化 Stage 类，管理棋盘渲染
+        const canvas = canvasRef.current;
+        const stage = stageRef.current || new Stage(canvas, gameBoard, config);
+        stageRef.current = stage;
+
+        // 初始化 eventManager 类，管理棋盘交互
+        const eventManager =
+          eventManagerRef.current || new EventManager(stage, gameBoard, config);
+        eventManagerRef.current = eventManager;
+        // 初始化游戏
+        if (gameBoard.is_waiting()) {
+          handleNewGame();
+        } else {
+          handleLoadGame();
+        }
+      }
     });
 
     return () => {
@@ -74,6 +94,7 @@ const GameBoard = () => {
   function startTimer() {
     clearInterval(timerRef.current);
     timerRef.current = setInterval(() => {
+      gameBoardRef.current.set_spentTime(gameBoardRef.current.spentTime + 1);
       setElapsedTime((prev) => prev + 1);
     }, 1000);
   }
@@ -116,6 +137,26 @@ const GameBoard = () => {
     stageRef.current.render();
   };
 
+  const handleLoadGame = () => {
+    setElapsedTime(gameBoardRef.current.spentTime);
+    if (gameBoardRef.current.is_running()) {
+      // 如果原本 running
+      setGameStarted(true);
+      handlePauseResume();
+    } else if (gameBoardRef.current.is_paused()) {
+      // 如果从暂停状态加载
+      setGameStarted(true);
+      setIsPaused(true);
+      stageRef.current.renderPause();
+    } else if (gameBoardRef.current.is_win()) {
+      setIsPaused(true);
+      setGameStarted(false);
+      setIsWin(true);
+    }
+
+    // todo: 渲染一个 "新游戏" 或 "继续游戏" 的选项（现在都是进到暂停界面）
+  };
+
   const handleUpdateConfig = () => {
     let restart = false;
     if (gameBoardRef.current.level !== config.level) {
@@ -137,168 +178,202 @@ const GameBoard = () => {
     }
   };
 
+  function handleChangeLevel(e) {
+    const newLevel = e.target.value;
+    setLevel(newLevel);
+    config.updateConfigs({ level: newLevel });
+    handleUpdateConfig();
+  }
+
   return (
-    <div className="game-wrap">
-      <div className="game-main">
-        <div className="game-stat">
-          <div>
-            <span>{t("Filled")}: </span>
-            <span>
-              {gameBoardRef.current?.get_board().filter((x) => x !== 0).length}{" "}
-              / {gameBoardRef.current?.get_board().length}
-            </span>
-          </div>
-          <div>
-            <span>{t("Error")}: </span>
-            <span>{gameBoardRef.current?.errorCount || 0}</span>
-          </div>
-          <div className="game-timer-wrap">
-            <span className="game-timer">{formatTime(elapsedTime)}</span>
-            {gameStarted && (
-              <button className="game-timer-btn" onClick={handlePauseResume}>
-                {isPaused ? (
-                  <HiPlay fontSize={24} />
-                ) : (
-                  <HiPause fontSize={24} />
-                )}
-              </button>
-            )}
-          </div>
-        </div>
-        <div className="game-board-wrap">
-          <canvas ref={canvasRef} id="game-board" />
-          {isPaused && (
-            <div className="game-board-react-wrapper">
-              {isWin ? (
-                // 展示胜利弹窗
-                <div className="win-modal">
-                  <h2 className="win-modal-title">{t("Congratulations")}</h2>
-                  <p>{t("You have solved the puzzle!")}</p>
-                  <button className="button" onClick={handleNewGame}>
-                    {t("New Game")}
-                  </button>
-                </div>
-              ) : (
-                <button
-                  className="game-board-paused-btn"
-                  onClick={handlePauseResume}
-                >
-                  <HiPlay fontSize={40} />
+    <>
+      <div className="level-selector">
+        <label>
+          {t("Level")}
+          <select value={level} onChange={handleChangeLevel}>
+            {Object.keys(LEVEL).map((level) => (
+              <option value={LEVEL[level]} key={level}>
+                {t(levelMap[LEVEL[level]])}
+              </option>
+            ))}
+          </select>
+        </label>
+      </div>
+      <div className="game-wrap">
+        <div className="game-main">
+          <div className="game-stat">
+            <div>
+              <span>{t("Filled")}: </span>
+              <span>
+                {gameBoardRef.current?.get_board()?.filter((x) => x !== 0)
+                  ?.length || "-"}{" "}
+                / {gameBoardRef.current?.get_board()?.length || "-"}
+              </span>
+            </div>
+            <div>
+              <span>{t("Error")}: </span>
+              <span>{gameBoardRef.current?.errorCount || 0}</span>
+            </div>
+            <div>
+              <span>{t("Hint")}: </span>
+              <span>{gameBoardRef.current?.hintCount || 0}</span>
+            </div>
+            <div className="game-timer-wrap">
+              <span className="game-timer">{formatTime(elapsedTime)}</span>
+              {gameStarted && (
+                <button className="game-timer-btn" onClick={handlePauseResume}>
+                  {isPaused ? (
+                    <HiPlay fontSize={24} />
+                  ) : (
+                    <HiPause fontSize={24} />
+                  )}
                 </button>
               )}
             </div>
-          )}
-        </div>
-        <div className="number-buttons-wrap">
-          <span>{t("Numbers")}</span>
-          <div className="number-buttons">
-            {Array.from({ length: boardSize }, (_, i) => i + 1).map((num) => (
-              <button
-                className="number-button"
-                key={num}
-                onClick={() => {
-                  if (isPaused) {
-                    return;
-                  }
-                  eventManagerRef.current.fillNumber(num);
-                  stageRef.current.render(
-                    eventManagerRef.current.selectedSquare
-                  );
-                }}
-              >
-                {num}
-              </button>
-            ))}
+          </div>
+          <div className="game-board-wrap">
+            <canvas ref={canvasRef} id="game-board" />
+            {isPaused && (
+              <div className="game-board-react-wrapper">
+                {isWin ? (
+                  // 展示胜利弹窗
+                  <div className="win-modal">
+                    <h2 className="win-modal-title">{t("Congratulations")}</h2>
+                    <p>
+                      {t("You have solved the puzzle!", {
+                        time: formatTime(elapsedTime),
+                      })}
+                    </p>
+                    <button className="button" onClick={handleNewGame}>
+                      {t("New Game")}
+                    </button>
+                  </div>
+                ) : (
+                  <button
+                    className="game-board-paused-btn"
+                    onClick={handlePauseResume}
+                  >
+                    <HiPlay fontSize={40} />
+                  </button>
+                )}
+              </div>
+            )}
+          </div>
+          <div className="number-buttons-wrap">
+            <span>{t("Numbers")}</span>
+            <div className="number-buttons">
+              {Array.from({ length: boardSize }, (_, i) => i + 1).map((num) => (
+                <button
+                  className="number-button"
+                  key={num}
+                  onClick={() => {
+                    if (isPaused) {
+                      return;
+                    }
+                    eventManagerRef.current.fillNumber(num);
+                    stageRef.current.render(
+                      eventManagerRef.current.selectedSquare
+                    );
+                  }}
+                >
+                  {num}
+                </button>
+              ))}
+            </div>
+          </div>
+          <div className="number-buttons-wrap">
+            <span>{t("Notes")}</span>
+            <div className="number-buttons">
+              {Array.from({ length: boardSize }, (_, i) => i + 1).map((num) => (
+                <button
+                  className="number-button notes-button"
+                  key={num}
+                  onClick={() => {
+                    if (isPaused) {
+                      return;
+                    }
+                    eventManagerRef.current.fillNote(num);
+                    stageRef.current.render(
+                      eventManagerRef.current.selectedSquare
+                    );
+                  }}
+                >
+                  {num}
+                </button>
+              ))}
+            </div>
+          </div>
+          <div className="action-buttons">
+            {gameStarted && (
+              <>
+                <button
+                  className="action-button button"
+                  onClick={() => {
+                    if (isPaused) {
+                      return;
+                    }
+                    eventManagerRef.current.fillNumber(0);
+                    stageRef.current.render(
+                      eventManagerRef.current.selectedSquare
+                    );
+                  }}
+                >
+                  {t("Erase")}
+                </button>
+
+                {/* 提示 */}
+                <button
+                  className="action-button button"
+                  onClick={() => {
+                    if (isPaused) {
+                      return;
+                    }
+                    const selected = eventManagerRef.current.selectedSquare;
+                    const hintNum = gameBoardRef.current.hint(
+                      selected.row,
+                      selected.col
+                    );
+                    eventManagerRef.current.fillNumber(hintNum);
+                    stageRef.current.render(selected);
+                  }}
+                >
+                  {t("Hint")}
+                </button>
+
+                {/* 解答 */}
+                <button
+                  className="action-button button"
+                  onClick={() => {
+                    if (isPaused) {
+                      return;
+                    }
+                    if (gameBoardRef.current.solve()) {
+                      stageRef.current.render();
+                    } else {
+                      console.log("无解"); // TODO: 弹 toast 告知用户：“哎呀，看起来前面有数字填错了，导致我们现在没法解出答案了～请检查一下前面的填写，再试一次哦！”
+                    }
+                  }}
+                >
+                  {t("Solve")}
+                </button>
+              </>
+            )}
           </div>
         </div>
-        <div className="number-buttons-wrap">
-          <span>{t("Notes")}</span>
-          <div className="number-buttons">
-            {Array.from({ length: boardSize }, (_, i) => i + 1).map((num) => (
-              <button
-                className="number-button notes-button"
-                key={num}
-                onClick={() => {
-                  if (isPaused) {
-                    return;
-                  }
-                  eventManagerRef.current.fillNote(num);
-                  stageRef.current.render(
-                    eventManagerRef.current.selectedSquare
-                  );
-                }}
-              >
-                {num}
-              </button>
-            ))}
-          </div>
-        </div>
-        <div className="action-buttons">
-          {gameStarted && (
-            <>
-              <button
-                className="action-button button"
-                onClick={() => {
-                  if (isPaused) {
-                    return;
-                  }
-                  eventManagerRef.current.fillNumber(0);
-                  stageRef.current.render(
-                    eventManagerRef.current.selectedSquare
-                  );
-                }}
-              >
-                {t("Erase")}
-              </button>
-
-              {/* 提示 */}
-              <button
-                className="action-button button"
-                onClick={() => {
-                  if (isPaused) {
-                    return;
-                  }
-                  const selected = eventManagerRef.current.selectedSquare;
-                  const hintNum = gameBoardRef.current.hint(
-                    selected.row,
-                    selected.col
-                  );
-                  eventManagerRef.current.fillNumber(hintNum);
-                  stageRef.current.render(selected);
-                }}
-              >
-                {t("Hint")}
-              </button>
-
-              {/* 解答 */}
-              <button
-                className="action-button button"
-                onClick={() => {
-                  if (isPaused) {
-                    return;
-                  }
-                  gameBoardRef.current.solve();
-                  stageRef.current.render();
-                }}
-              >
-                {t("Solve")}
-              </button>
-            </>
-          )}
-        </div>
-      </div>
-      <div>
         <div>
-          <button className="button" onClick={handleRestart}>
-            {t("Restart this Game")}
-          </button>
-          <button className="button" onClick={handleNewGame}>
-            {t("New Game")}
-          </button>
+          <div>
+            <button className="button" onClick={handleRestart}>
+              {t("Restart this Game")}
+            </button>
+            <button className="button" onClick={handleNewGame}>
+              {t("New Game")}
+            </button>
+          </div>
+          <GameConfig onUpdate={handleUpdateConfig} />
+          <GameStat stat={stat} />
         </div>
-        <GameConfig onUpdate={handleUpdateConfig} />
       </div>
-    </div>
+    </>
   );
 };
 

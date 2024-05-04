@@ -6,6 +6,13 @@ export const LEVEL = {
   VERY_HARD: 4,
 }
 
+export const levelMap = {
+  [LEVEL.VERY_EASY]: "Very Easy",
+  [LEVEL.EASY]: "Easy",
+  [LEVEL.NORMAL]: "Normal",
+  [LEVEL.HARD]: "Hard",
+  [LEVEL.VERY_HARD]: "Very Hard",
+}
 
 class Config {
   constructor() {
