@@ -222,7 +222,11 @@ const GameBoard = () => {
             <div className="game-timer-wrap">
               <span className="game-timer">{formatTime(elapsedTime)}</span>
               {gameStarted && (
-                <button className="game-timer-btn" onClick={handlePauseResume}>
+                <button
+                  className="game-timer-btn"
+                  onClick={handlePauseResume}
+                  aria-label={isPaused ? "play" : "pause"}
+                >
                   {isPaused ? (
                     <HiPlay fontSize={16} />
                   ) : (
