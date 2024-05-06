@@ -12,10 +12,6 @@ export default defineConfig({
         'zh': './zh/index.html',
         'ja': './ja/index.html',
       },
-      // output: {
-      //   dir: 'dist',
-      //   format: 'esm',
-      // },
     },
   },
 })
